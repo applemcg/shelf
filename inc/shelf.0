@@ -1,0 +1,9 @@
+shelf_init ()
+{
+     om_init
+     om_iam
+     report_init
+     shdoc_init
+     trace_init
+}
+shelf_init 1>&2

@@ -1,0 +1,26 @@
+# utility functions
+   
+# Note the shell idiom in the *shd_top* function.   It's a convenient 
+# shorthand to list a collection of similar names.  In this case, this
+# /shdlib/ conventionally defines functions whose name begins with /shd_/.
+# [[file:~/Dropbox/commonplace/software/shreadme.org::*utility%20functions][utility\ functions:1]]
+shd_top () 
+{ 
+    echo shdoc shd_{oc,each,with,test}
+}
+shd_test () 
+{ 
+    : 1. test default, NO arguments, then;
+    : 2. stub out test all functions in the library;
+    : 3. demonstrate ignore subsequent comments;
+    : 4. test shd_with;
+    : 5. test shd_each defends against non-shdoc call;
+    shdoc;
+    :;
+    set $(sfg shd_);
+    : doit shdoc $*;
+    shd_with $*;
+    shd_each $*;
+    declare -f shd_test | grep -v '^ *:' 1>&2
+}
+# utility\ functions:1 ends here

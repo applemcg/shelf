@@ -1,0 +1,16 @@
+# shdoc, shd_with
+
+# The functions here operate on  shell functions, and operate similar to
+# the  three mentioned  above: Java,  Perl,  and Python.   The two  most
+# useful functions, *shdoc* and *shd_with* produce a function whose body
+# is  the collected  comments in  what  I'm calling  *shdoc*, or  /shell
+# doclib comment/ format:
+# [[file:~/Dropbox/commonplace/software/shreadme.org::*shdoc,%20shd_with][shdoc\,\ shd_with:1]]
+@include shdoc.1
+@include shdoc.2
+@include shdoc.3
+shdoc_init ()
+{
+   om_iam
+}
+# shdoc\,\ shd_with:1 ends here

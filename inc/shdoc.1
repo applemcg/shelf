@@ -1,0 +1,29 @@
+# [[file:~/Dropbox/commonplace/software/shreadme.org::*shdoc,%20shd_with][shdoc\,\ shd_with:1]]
+shdoc () 
+{ 
+    : this is a shell doclib "shdoc" comment;
+    : an shdoc comment is the first ":"-origin lines;
+    : in the shell function, the rest being the executable.;
+    for f in ${*:-$(myname)};
+    do
+        shd_each $f;
+    done
+}
+shd_with () 
+{ 
+    : removes shd_less functions from shdoc results;
+    : creating function {name}_doc for function "name";
+    shdoc $* | awk '
+   #                  { print "DEBUG: ", fcount, last > "/dev/stderr"; }
+   $1 ~ /function/   { fcount++; last = $0; next;  }
+   $1 ~ /}/ && last  { next }
+   last              { print last; last = ""; fcount = 0;  }
+   fcount == 0       { print }
+                   '
+}
+function shdoc_doc {
+    : this is a shell doclib "shdoc" comment;
+    : an shddoc comment is the first ":"-origin lines;
+    : in the shell function, the rest being the executable.;
+}
+# shdoc\,\ shd_with:1 ends here

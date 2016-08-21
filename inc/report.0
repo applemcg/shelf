@@ -1,0 +1,13 @@
+# [[file:~/Dropbox/commonplace/software/shreadme.org::*reportlib,%20main][reportlib\,\ main:1]]
+copyright_report () 
+{ 
+    comment "Copyright (C) 2015-2016, JYATL - Just Yet Another Testing Lab";
+    comment "mailto: mcgowan (at) alum DOT mit DOT edu";
+}
+report_init ()
+{
+    om_iam
+}
+@include report.1
+report_init 1>&2
+# reportlib\,\ main:1 ends here

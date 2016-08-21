@@ -1,0 +1,8 @@
+# applib all
+# These tangles put the three pieces together:
+# [[file:~/Dropbox/commonplace/software/applib.org::*applib%20all][applib\ all:1]]
+@include appmain.0
+@include applib.1
+@include apptang.0
+app_init 1>&2
+# applib\ all:1 ends here
