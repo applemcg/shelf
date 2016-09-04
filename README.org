@@ -85,6 +85,7 @@ report_notargcount ()
     report_usage need at least $1 arg/s: $(shift 2; echo $*)
 }
 #+END_SRC
+
 Note how the function treats arguments after the second.  Woe to the
 user who abuses a reporting function.
 
@@ -98,7 +99,7 @@ the function executes as desired.
 ** shdoc -- the SHell DOCumentation standard
 
 These functions encourage a programmer to write a brief introductory
-user guide to each function.  Here is the [[./shdoc.org][shdoc family user guide]].
+user guide to each function.  Here is the [[./shdoc.org][shdoc Family User Guide]].
 
 The family name is the *shd* prefix.  The functions in this family set
 a standard for  shell doclib capture and  presentation.  Precedent for
@@ -142,11 +143,6 @@ work by number of command executions.
 For each call, the trace log collects two function names: the current
 function and it's calling function.  This enables a user to construct
 a calling tree from the log.
-
-
-
-
-
 
 ** util -- a few programming functions
 
@@ -404,8 +400,8 @@ For example:
 : $ shd top       # calls shd_top, returning
 : shdoc shd_oc shd_each shd_with shd_test
 
-
-* <<mflibinit>>Multi-family libraries
+#+NAME: mflibinit
+* Multi-family libraries
 
 The [[./shelf.org][SHELF Standard]] allows a single executable statment when sourceing
 a library, which leaves nothing on the standard output.  Since each family
@@ -437,43 +433,31 @@ the process which supported that process, and at this moment,
 the [[http://github.com/applemcg/combine][Combine Repository]] is itself being brought into this REPO and resulting
 SHELF library. 
 ** The installation script
-#+BEGIN_SRC sh :tangle ./src/shelf.install :padline no
+Given the companion [[./combine.org][Combine facility]], this is the install script for the
+shelflib:
 
-    install_bin shelf
-
-#+END_SRC
+#+INCLUDE: "./src/shelflib.install"
 
 ** the top shelf
 
-#+BEGIN_SRC txt :tangle ./inc/shelf.all :padline no
-@include util.0
-@include report.0
-@include shdoc.0
-@include trace.0
-@include om.0
-@include shelf.0
-#+END_SRC
+The shelf.all file collects the families into the installable
+shell library: *shelflib*
+#+INCLUDE: "./inc/shelf.all" example
 
-#+BEGIN_SRC txt :tangle ./inc/shelf.0 :padline no
-shelf_init ()
-{
-     fam_init
-     fam_iam
-     report_init
-     shdoc_init
-     trace_init
-}
-shelf_init 1>&2
-#+END_SRC
+And it's initialized by the only unique function in the library:
+~shelf_init~ which initializes the various families:
 
+#+INCLUDE "./inc/shelf.ini" example
 
 * References
 
-If reading on paper, this document is found on-line at
-[[http://mcgowans.org/marty3/commonplace/software/shdoc.html]] 
-
-+ the [[./shdoc.org][shdoc function family]]
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
 + the [[./shelf.org][SHELF Standard]]
-+ my [[../book.org][Commonplace Book]]
++ the [[./README.org][Rationale and Practice]]
++ the [[./famguide.org][fam function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]
 
 #+INCLUDE: ./author.org

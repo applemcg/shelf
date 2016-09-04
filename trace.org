@@ -1,0 +1,41 @@
+#+INCLUDE: ./universalOrgPreface.txt
+
+#+TITLE: Trace Family User Guide
+
+* COMMENT TODO
+
+* Scope
+
+This is User Guide for the Trace function Family  supporting the [[./shelf.org][SHELF Standard]].  
+
+The Trace Family functions allow the user to trace function calls, writing
+pertinent information to the standard error.   The typical use is to put this line
+: trace_call $*
+at an early point in a function.
+
+The SHELF Standard calls for a trace feature.
+
+* Trace Family Functions
+
+** trace_call
+** trace_on, off
+** trace_stderr
+
+* Trace Features
+
+* References
+
+If reading on paper, this document is found on-line at
+
+http://github.com/applemcg/shelf/blob/master/trace.org
+
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
++ the [[./shelf.org][SHELF Standard]]
++ the [[./README.org][Rationale and Practice]]
++ the [[./famguide.org][fam function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]
+
+#+INCLUDE: ./author.org
