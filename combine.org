@@ -450,12 +450,12 @@ and remember tangle command : C-c C-v t
 
 * References
 
-1. [[http://mcgowans.org/marty3/commonplace][Commonplace Book]], of Marty McGowan
-   http://mcgowans.org/marty3/commonplace
-
-1. [[http://mcgowans.org/marty3/commonplace/software/shelf.html][SHELF Standard]].
-   http://mcgowans.org/marty3/commonplace/software/shelf.html
-
-1. [[https://github.com/applemcg/combine][Github combinelib Repo]]
-   https://github.com/applemcg/combine
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
++ the [[./shelf.org][SHELF Standard]]
++ the [[./README.org][Rationale and Practice]]
++ the [[./famguide.org][fam function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]
 

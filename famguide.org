@@ -142,8 +142,11 @@ If reading on paper, this document is found on-line at
 http://github.com/applemcg/shelf/blob/master/famguide.org
 
 + [[https://www.gnu.org/software/bash/manual/bashref.html#Brace-Expansion][Bash Shell brace expansion]]
-+ the [[./shdoc.org][shdoc function family]]
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
 + the [[./shelf.org][SHELF Standard]]
-+ my [[../book.org][Commonplace Book]]
-
-
++ the [[./README.org][Rationale and Practice]]
++ the [[./famguide.org][fam function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]

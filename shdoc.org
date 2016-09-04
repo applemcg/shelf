@@ -281,7 +281,14 @@ Here's a question:  /why doesn't shd_each have any shdoc comments?/
 If reading on paper, this document is found on-line at
 [[http://mcgowans.org/marty3/commonplace/software/shdoc.html]] 
 
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
 + the [[./shelf.org][SHELF Standard]]
-+ my [[../book.org][Commonplace Book]]
++ the [[./README.org][Rationale and Practice]]
++ the [[./famguide.org][fam function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]
+
 
 #+INCLUDE: ./author.org

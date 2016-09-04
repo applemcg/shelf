@@ -15,7 +15,7 @@ one or more /families/, the organizing principal for functions.
 A section of the standard suggests steps for verifying conformance.
 
 In an attempt to keep the standard concise, here is the 
-[[./shreadme.org][SHELF Rationale and Practice]].
+[[./README.org][SHELF Rationale and Practice]].
 
 ** What's it about
 
@@ -31,7 +31,7 @@ ubiquity of the [[https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29][bash shel
 At the moment, these function families are featured as supporting the
 standard:
 
-+ *om* -- the object-model, or object-method for naming functions
++ *fam* -- the family model for organizing function families
 + *report* -- or *assert* for verifying function arguments
 + *shdoc* -- a subset, the Shell DOCumentation standard, after JavaDoc, etc.
 + *trace* -- function execution tracing, and
@@ -150,12 +150,19 @@ an otherwise undetected error/. /A successful test is one which does/.
 
 + the standard, online:
   [[http://mcgowans.org/marty3/commonplace/software/shelf.html]] 
-+ my [[../book.org][Commonplace Book]]
-+ the [[./README.org][SHELF Rationale and Practice]].
 
-Search for:
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
++ the [[./shelf.org][SHELF Standard]]
++ the [[./README.org][Rationale and Practice]]
++ the [[./famguide.org][fam function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]
 
-+ [[http://www.ctan.org/pkg/shdoc][shdoc]]
+Also, a search for:
+
++ [[http://www.ctan.org/pkg/shdoc][shdoc]] -- a prior use of the name,
 + [[https://en.wikipedia.org/wiki/Javadoc][Javadoc]]
 + [[http://perldoc.perl.org][Perldoc]]
 + [[http://pydoc.org][Pydoc]]
