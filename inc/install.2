@@ -1,0 +1,179 @@
+# COMMENT Utility Functions
+# [[file:~/git/shelf/combine.org::*Utility%20Functions][COMMENT\ Utility\ Functions:1]]
+comment () 
+{ 
+    echo $* 1>&2
+}
+doit () 
+{ 
+    echo $* 1>&2;
+    $*
+}
+indir () 
+{ 
+    report_notdirectory $1 && return 1;
+    ignore pushd $1;
+    shift;
+    eval $@;
+    ignore popd
+}
+fun_from () 
+{ 
+    trace_call $*;
+    : reconcile patterns to fuse;
+    cat ${*:--} | awk ' 
+        $2 ~ /^\(\)$/     { print $1 } 
+             /^function / { print $2 }
+    '
+}
+functions () 
+{ 
+    trace_call $*;
+    fun_from $* | printfirst
+}
+isfunction () 
+{ 
+    trace_call $*;
+    declare -f $1 > /dev/null
+}
+myname () 
+{ 
+    echo ${FUNCNAME[${1:-1}]}
+}
+needir () 
+{ 
+    trace_call $*;
+    [[ -d $1 ]] || mkdir -p $1;
+    echo $1
+}
+om_generic () 
+{ 
+    : ~ fun { sub arg ... };
+    : preferably executes FUN_SUB arg ...;
+    : or FUN_HELP;
+    : ====================================;
+    local fun=$1;
+    shift;
+    : only when a function is first use thru the model;
+    declare -f ${fun}_firsttime > /dev/null && ${fun}_firsttime;
+    [[ $# -lt 1 ]] && { 
+        ${fun}_help 2> /dev/null;
+        return
+    };
+    local f=${fun}_$1;
+    shift;
+    declare -f $f > /dev/null 2>&1 || { 
+        ${fun}_help 2> /dev/null;
+        return
+    };
+    $f $*
+}
+om_iam () 
+{ 
+    : user identifies themself as an OM object;
+    set $(myname 2);
+    set ${1%_init};
+    report_notcalledby ${1}_init && return 1;
+    : create the OM function;
+    eval "$1 () { om_generic $1 \$*; }";
+    : every family has a list of members;
+    local l=${1}_list;
+    declare -f $l > /dev/null 2>&1 || { 
+        eval "$l () { (sfg ^${1}_; sfg _${1}$) 2>/dev/null; }"
+    };
+    : every family may have shell varialbles;
+    local v=${1}_vars;
+    local V=$(UC $1);
+    declare -f $v > /dev/null 2>&1 || { 
+        eval "$v () { set | grep ^${V}_ 2>/dev/null; }"
+    };
+    : and a default help function when one doesnt exist;
+    local h=${1}_help;
+    declare -f $h > /dev/null 2>&1 || { 
+        eval "$h () { echo $1 functions, variables:; ($v; $l) | sed 's/^/  /'; }"
+    };
+    : shows Copyright when library is sourced.;
+    local f=${1}_firsttime;
+    eval "$f () { copyright_${1}; unset $f; }";
+    : and displays the help;
+    ${1}_help
+}
+printfirst () 
+{ 
+    trace_call $*;
+    awk '!printed [$1]++' $*
+}
+qmoved () 
+{ 
+    [ "$PWD" == "${1:-$PWD}" ] && return;
+    echo MOVED to $PWD
+}
+report_notargcount () 
+{ 
+    [[ $2 -ge $1 ]] && return 1;
+    report_usage need at least $1 arg/s: $(shift 2; echo $*)
+}
+report_notcalledby () 
+{ 
+    set ${1:-/dev/null} $(myname 3) non-Existant-function;
+    [[ $2 == $1 ]] && return 1;
+    report_usage was NOT called by $1.
+}
+report_notfile () 
+{ 
+    [[ -f $1 ]] && return 1;
+    report_usage $1 is NOT a file
+}
+report_usage () 
+{ 
+    comment USAGE $(myname 3): $*
+}
+setenv () 
+{ 
+    [[ $# -lt 1 ]] && return;
+    local na=$1;
+    shift;
+    eval $na=\"$*\";
+    export $na
+}
+sfg () 
+{ 
+    trace_call $*;
+    set | functions | grep -i ${*:-.}
+}
+trace_call () 
+{ 
+    trace_stderr "$@"
+}
+trace_off () 
+{ 
+    eval "trace_call () { return; }";
+    trace_set trace_off trace_on
+}
+trace_on () 
+{ 
+    eval "trace_call () { trace_stderr \"\$@\"; }";
+    trace_set trace_on trace_off
+}
+trace_set () 
+{ 
+    case $1.$2 in 
+        trace_on.trace_off | trace_off.trace_on)
+            setenv TRACE_STATE ${1};
+            setenv TRACE_NOT ${2}
+        ;;
+        trace_on.*)
+            trace_set $1 trace_off
+        ;;
+        trace_off.*)
+            trace_set $1 trace_on
+        ;;
+    esac
+}
+trace_stderr () 
+{ 
+    pa=${FUNCNAME[2]:-COMMANDLINE};
+    gr=${FUNCNAME[3]:-COMMANDLINE};
+    printf "TRACE %s\t@ %s %d  ( %s )\n" "$pa" "$gr" $# "$*" 1>&2
+}
+# COMMENT\ Utility\ Functions:1 ends here

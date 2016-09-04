@@ -1,0 +1,19 @@
+# installation
+
+# This fragment combines (!) the /combine/ and /install/ families into a
+# single library  *combinelib*.  Since a  first-time user will  not have
+# the  library  already  installed, the  simple  bootstrap  instructions
+# follow, which should add to one's appreciation of the method.
+
+# The ~install_bin~  command anticipates  an output  file: /combine.out/
+# and looks  for or  creates a  *bin* directory  to hold  the executable
+# *combinelib*
+
+# Moreover,  this  distribution includes  a  copy  of necessary  utility
+# functions from the [[http://mcgowans.org/marty3/commonplace/software/shelf.html][SHELF]] Standard.  At some glorious future date, this
+# will incorporate sourcing that library,  rather than having copied its
+# code, as a prerequisite.
+# [[file:~/git/shelf/combine.org::*installation][installation:1]]
+install_bin combine
+install_app include
+# installation:1 ends here

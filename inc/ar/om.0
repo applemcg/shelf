@@ -1,4 +1,4 @@
-# om_generic
+# fam_generic
 # This function offers it's users three standard features:
 # 1. any function in such a family may be invoked:
 #    : family subfun arg ...     # rather than
@@ -16,28 +16,28 @@
 #    thru the family name.  This is a way to display a copyright 
 #    notice only once, the default behavior.  In this sence, the first
 #    time means "in the process of the current shell".
-# [[file:~/Dropbox/commonplace/software/shreadme.org::*om_generic][om_generic:1]]
+# [[file:~/Dropbox/commonplace/software/shreadme.org::*fam_generic][fam_generic:1]]
 copyright_om () 
 { 
     comment "Copyright (C) 2014-2016, JYATL - Just Yet Another Testing Lab";
     comment "mailto: mcgowan (at) alum DOT mit DOT edu";
 }
-om_tally () 
+fam_tally () 
 { 
     trace_call $*;
-    om_list | sort | uniq -c
+    fam_list | sort | uniq -c
 }
-om_help () { echo to see OM functions, om_list; }
-om_list () 
+fam_help () { echo to see OM functions, fam_list; }
+fam_list () 
 { 
     sfg _ | awk -F_ '{ printf "object\t%s\nmethod\t%s\n", $1, $2 }'
 }
-om_init () 
+fam_init () 
 { 
-    declare -f om_iam >/dev/null || { comment $(myname) OM_IAM is NOT a function; return 1; }
-    om_iam
+    declare -f fam_iam >/dev/null || { comment $(myname) OM_IAM is NOT a function; return 1; }
+    fam_iam
 }
-om_iam () 
+fam_iam () 
 { 
     : user identifies themself as an OM object;
     set $(myname 2);
@@ -45,7 +45,7 @@ om_iam ()
     report_notcalledby ${1}_init && return 1;
 
     : create the OM function
-    eval "$1 () { om_generic $1 \$*; }"
+    eval "$1 () { fam_generic $1 \$*; }"
 
     : every family has a list of members
     local l=${1}_list;
@@ -70,7 +70,7 @@ om_iam ()
     : and displays the help
     ${1}_help 
 }
-om_generic () 
+fam_generic () 
 { 
     : ~ fun { sub arg ... };
     : prefereably executes FUN_SUB arg ...;
@@ -92,4 +92,4 @@ om_generic ()
     };
     $f $*
 }
-# om_generic:1 ends here
+# fam_generic:1 ends here

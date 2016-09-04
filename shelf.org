@@ -1,6 +1,7 @@
+#+INCLUDE: universalOrgPreface.txt
+
 #+TITLE: Shell Library-Function Standard -- SHELF
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../style.css" />
-#+OPTIONS: ^:nil
+
 * COMMENT TODO
 
 * Scope
@@ -89,7 +90,7 @@ is the name of a function in the named /family/.
 This standard specifies certain required behavior for sub-functions:
 
 + help -- may write any useful instructions on *stdout*
-+ init -- mandatory behavior calls *om_iam* to identify the family, and
++ init -- mandatory behavior calls *fam_iam* to identify the family, and
   any other necessary features when the family library is ~sourced~
 + list -- returns a list of the family function names.
 
@@ -150,7 +151,7 @@ an otherwise undetected error/. /A successful test is one which does/.
 + the standard, online:
   [[http://mcgowans.org/marty3/commonplace/software/shelf.html]] 
 + my [[../book.org][Commonplace Book]]
-+ the [[./shreadme.org][SHELF Rationale and Practice]].
++ the [[./README.org][SHELF Rationale and Practice]].
 
 Search for:
 
@@ -159,4 +160,6 @@ Search for:
 + [[http://perldoc.perl.org][Perldoc]]
 + [[http://pydoc.org][Pydoc]]
 
-#+INCLUDE: ../author.org
+#+INCLUDE: ./author.org
+
+

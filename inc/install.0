@@ -1,0 +1,35 @@
+# User Functions
+# [[file:~/git/shelf/combine.org::*User%20Functions][User\ Functions:1]]
+copyright_install ()
+  { 
+      comment "Copyright (C) 2016, JYATL - Just Yet Another Testing Lab";
+      comment "mailto: mcgowan (at) alum DOT mit DOT edu";
+  }
+install_app () 
+{
+    install_executable $1.$INSTALL_SRC $1
+}
+install_bin () 
+{ 
+    install_executable $1.$INSTALL_SRC ${1}lib
+}
+install_one () 
+{
+    : ~ handle
+    report_notargcount 1 $# handle               && return 1
+    report_notfile $INSTALL_FROM/$1.$INSTALL_CMD && return 2
+
+    indir $INSTALL_FROM . $1.$INSTALL_CMD
+}
+install_combine () 
+{
+    : ~ 
+    : from the package directory
+    : 
+    combine_mk
+    pushd $INSTALL_FROM >/dev/null  
+    : installation instructions
+    for ins in *.$INSTALL_CMD; do . $ins; done
+    popd > /dev/null
+}
+# User\ Functions:1 ends here

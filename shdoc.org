@@ -1,6 +1,7 @@
+#+INCLUDE: universalOrgPreface.txt
+
 #+TITLE: Shdoc User Guide
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../style.css" />
-#+OPTIONS: ^:nil
+
 * COMMENT TODO
 ** TODO develop a documentation display standard.
 * Scope
@@ -152,7 +153,7 @@ shd_test ()
 }
 shd_init () 
 { 
-    om_iam
+    fam_iam
 }
 shd_init 1>&2
 #+END_SRC 
@@ -160,7 +161,7 @@ shd_init 1>&2
 The standard  practice for such a  library has a single  executable as
 the last line, as above.
 
-The standard practice for a library family is now to call *om_iam* from 
+The standard practice for a library family is now to call *fam_iam* from 
 an /_init/ function for the family, in this case, *shd_init*
 
 1. it defines a help function, if not already defined, {arg}_help,
@@ -185,6 +186,96 @@ Consider using the report_ ... functions to collect the user guide
 1. functions
 ** presentation
 
+
+** shdoc family
+*** shdoc, shd_with
+
+The functions here operate on  shell functions, and operate similar to
+the  three mentioned  above: Java,  Perl,  and Python.   The two  most
+useful functions, *shdoc* and *shd_with* produce a function whose body
+is  the collected  comments in  what  I'm calling  *shdoc*, or  /shell
+doclib comment/ format:
+
+#+BEGIN_SRC sh :tangle ./inc/shdoc.0 :comments both :padline no
+@include shdoc.1
+@include shdoc.2
+@include shdoc.3
+shdoc_init ()
+{
+   fam_iam
+}
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle ./inc/shdoc.1 :comments both :padline no
+shdoc () 
+{ 
+    : this is a shell doclib "shdoc" comment;
+    : an shdoc comment is the first ":"-origin lines;
+    : in the shell function, the rest being the executable.;
+    for f in ${*:-$(myname)};
+    do
+        shd_each $f;
+    done
+}
+shd_with () 
+{ 
+    : removes shd_less functions from shdoc results;
+    : creating function {name}_doc for function "name";
+    shdoc $* | awk '
+   #                  { print "DEBUG: ", fcount, last > "/dev/stderr"; }
+   $1 ~ /function/   { fcount++; last = $0; next;  }
+   $1 ~ /}/ && last  { next }
+   last              { print last; last = ""; fcount = 0;  }
+   fcount == 0       { print }
+		   '
+}
+function shdoc_doc {
+    : this is a shell doclib "shdoc" comment;
+    : an shddoc comment is the first ":"-origin lines;
+    : in the shell function, the rest being the executable.;
+}
+#+END_SRC
+
+Note the result. The *shdoc_doc* function is the first colon-delimited
+lines of the *shdoc* function.
+
+*shd_with* is the most useful of the bunch, as it says by
+removing /shd_less/ functions from shdoc results.
+
+*** shd_each
+
+To complete the picture, here is *shd_each*.  It's notable in that it
+insists on being called by *shdoc*.
+
+#+BEGIN_SRC sh :tangle ./inc/shdoc.2 :comments both :padline no
+shd_each () 
+{ 
+    report_notfunction $1 && return 1;
+    report_notcalledby shdoc && return 2;
+    trace_call $*;
+    echo "function ${1}_doc {";
+    declare -f $1 | awk '
+       NR > 2 {
+                if ( $1 !~ /^:/ ) exit
+                else              print
+	      }
+	';
+    echo "}"
+}
+shd_trim () 
+{ 
+    report_notfunction $1 && return 1;
+    trace_call $*;
+    declare -f $1 | awk ' $1 !~ /^:$/'
+}
+
+#+END_SRC 
+
+Note *shd_each* produces the result for only one function, if only to print
+a single function body; it insists on being called by *shdoc*.
+
+Here's a question:  /why doesn't shd_each have any shdoc comments?/
+
 * References
 
 If reading on paper, this document is found on-line at
@@ -193,4 +284,4 @@ If reading on paper, this document is found on-line at
 + the [[./shelf.org][SHELF Standard]]
 + my [[../book.org][Commonplace Book]]
 
-~#+INCLUDE: ../author.org
+#+INCLUDE: ./author.org

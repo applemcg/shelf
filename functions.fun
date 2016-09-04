@@ -1,0 +1,7 @@
+fun_from
+functions
+printfirst
+trace_call
+trace_off
+trace_on
+trace_stderr

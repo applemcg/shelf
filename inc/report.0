@@ -6,7 +6,7 @@ copyright_report ()
 }
 report_init ()
 {
-    om_iam
+    fam_iam
 }
 @include report.1
 report_init 1>&2

@@ -16,10 +16,10 @@ app_fun ()
 }
 app_init () 
 { 
-    : see if _firsttime should go in om_iam, om_generic;
+    : see if _firsttime should go in fam_iam, fam_generic;
     source auxlib 2> /dev/null;
     needfrom fixlib fun_extract;
-    om_iam;
+    fam_iam;
     isfunction app_firsttime && app_firsttime
 }
 app_trace () 

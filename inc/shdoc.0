@@ -11,6 +11,6 @@
 @include shdoc.3
 shdoc_init ()
 {
-   om_iam
+   fam_iam
 }
 # shdoc\,\ shd_with:1 ends here

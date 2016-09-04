@@ -1,7 +1,7 @@
 shelf_init ()
 {
-     om_init
-     om_iam
+     fam_init
+     fam_iam
      report_init
      shdoc_init
      trace_init

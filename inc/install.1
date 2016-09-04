@@ -1,0 +1,52 @@
+# Family Functions
+# [[file:~/git/shelf/combine.org::*Family%20Functions][Family\ Functions:1]]
+file_append ()    { local file=$1; shift; $@ >> $file; }
+install_duplog () { ${*:-echo}  $(needir $HOME/lib)/duplicateWhich.log; }
+install_executable () 
+{
+    chmod +x $1
+    : defend against multiple "which"s
+    set $1 $(install_needex ${2:-${1}lib})
+    [[ $# -gt 2 ]] && { 
+          file_append $(install_duplog) echo install_executable $*
+    }
+    doit ln  -f $1 $2 1>&2
+}
+install_needex () 
+{
+    : ~ file
+    : return name of INSTALL_TO/file, if the variable is set,
+    : ...     or if previously installed, return {which file}
+    : ...     or HOME/bin/file.
+    : the directories are created if needed
+
+    report_notargcount 1 $# possible executable && return 1
+    trace_call $*
+
+    [[ -n "$INSTALL_TO" ]] && {
+
+        echo $(needir $INSTALL_TO)/$1
+        return
+    }
+    
+    which $1 && return
+
+    echo $(needir $HOME/bin)/$1 
+   
+}
+install_init ()
+{
+    : INSTALL_FROM defaults either to COMBINE_TO, or "./src"
+    : carefully note that INSTALL_FROM is set if not yet, while
+    : COMBINE_TO is NOT gratuitously set.  ":=" vs ":-"
+    : similarly for the INSTALL_SRC and COMBINE_OUT suffixes.
+    : ------------------------------------- directories --
+    : ${INSTALL_FROM:=${COMBINE_TO:-./src}}
+    : ${INSTALL_TO:=""}
+    : ------------------------------------- file suffix --
+    : ${INSTALL_SRC:=${COMBINE_OUT:-out}}
+    : ${INSTALL_CMD:=install}
+
+    om_iam
+}
+# Family\ Functions:1 ends here

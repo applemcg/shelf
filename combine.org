@@ -1,0 +1,940 @@
+#+INCLUDE: ./universalOrgPreface.txt
+
+#+TITLE: CombineLib
+
+* COMMENT hidden from document
+    ---
+** DONE cleanup tanglelib
+   Closed: [2016-04-25 Mon 10:05]
+
+** TODO extend report_notcalleby to accept multiple function arguments
+** DONE factor installation out of combining
+   CLOSED: [2016-05-26 Thu 11:31]
+** TODO then, add installation in each major tangler
+
+** DONE move from tangle to COMBINE
+   CLOSED: [2016-05-26 Thu 11:30]
+** DONE add combine_mkapp, combine_mksh
+   CLOSED: [2016-05-17 Tue 11:23]
+
+* Combine and Install Introduction 
+
+This  paper is  part of  my [[http://mcgowans.org/marty3/commonplace][Commonplace  Book.]] It  introduces a  shell
+function library, *combinelib*.  This  function library allow users to
+compose files  from reusable  smaller files,  combine them  in various
+methods, and install those combinations in a run-time environment.
+
+If necessary, the user may have  to supply an intermediate toolkit if,
+for  example   /compiling/  is  required.   Otherwise,   for  all-text
+situations, this library is a complete package.
+
+The  library  contains functions  from  the  [[./shelf.org][SHELF Standard]].   In  the
+language of  that standard, two  families *combine* and  *install* are
+presented.  A  function family  has a parent  function, any  number of
+sub-functions, and  like-named variables.   For example  the *combine*
+family   has   a   function  named   ~combine~   and   ~combine_init~,
+~combine_one,~   ...    and   shell  variables   named   COMBINE_FROM,
+COMBINE_TO, and so forth.
+
+The  /combine/ functions  combine individual  file fragments  from the
+COMBINE_FROM  directory, defaulting  to  ~./inc~  into the  COMBINE_TO
+directory,  defaulting  to ~./src~  from  which  they may  be  further
+optionally compiled and installed into run-time locations.
+
+The /install/ tools  install tools from the  INSTALL_FROM directory to
+the INSTALL_TO directory, whether /combined/ or not.
+
+The shell variables  default to make the  process seamless: COMBINE_TO
+and INSTALL_FROM are the same location.
+
+A bootstrap is also supplied.   Once the *combinelib* is installed by
+the bootstrap, it is ready for use in other cases.
+
+* Usage, operations
+
+These are in sequence, since combining occurs before installation.
+
+The emacs user  /tangles/ this file into all the  other file fragments
+needed to ~combine~ and ~install~ the function families.
+
+The non-emacs  user finds the  tangled components in  their respective
+places in the [[https://github.com/applemcg/combine][github repo: combine]].
+
+#+BEGIN_EXAMPLE
+
+ COMBINE, followed by INSTALL
+ ----------------------------
+
+       inc/~.all
+       ---------
+           + <------+ @ file
+           V        + @ file
+      ( COMBINE )   + ...
+           | 
+           V
+       src/~.out
+       ---------
+           + <---| src/~.install
+           V
+      ( INSTALL ) 
+           |
+           V
+       ---------	 
+      INSTALL_OUT/~
+
+#+END_EXAMPLE
+
+This companion table shows how default suffix and directory names
+are mapped onto shell variables. 
+
+
+  | pref       | COMBINE | INSTALL |
+  |------------+---------+---------|
+  | directory: |         |         |
+  |------------+---------+---------|
+  | inc        | _FROM   |         |
+  | src        | _TO     | _FROM   |
+  |------------+---------+---------|
+  | suffix:    |         |         |
+  |------------+---------+---------|
+  | all        | _SRC    |         |
+  | out        | _OUT    | _SRC    |
+  | install    |         | _CMD    |
+
+For  example   COMBINE_TO  and  INSTALL_FROM  both   share  the  /src/
+directory.  And /install/  is the name of an  INSTALL_CMD suffix.  All
+may be customized.
+
+** combine
+
+*** files
+
+From a file named /something/.all, where *all* is the default for *COMBINE_SUF*,
+with zero or more recursive ~@include~ directives, produce /something/.out,
+where *out* is the default for *COMBINE_OUT*
+
+Here's a sample input file
+: @include aux.0
+: @include aux.1
+:  ...
+: @include report.all
+: @include stack.0
+: @include trace.0
+:  ...
+
+*** commands
+
+Run either  of these  commands to  combine the  file fragments  into a
+useful file:
+
+: $ include file.${COMBINE_SUF} > file.${COMBINE_OUT} 2> file.err
+: $ combine_mk       # in the parent directory of COMBINE_ALL
+
+** install
+
+Installation happens from the  INSTALL_FROM directory.  It's default is
+the COMBINE_TO directory.   It may be as simple  as ~./src~, relative
+to  the current  directory.  Files  in  that directory  named with  an
+INSTALL_CMD suffix,  defaulting to  *install* direct  the installation
+process.   Files with the suffix INSTALL_SRC are moved (linked, copied)
+as executable to either, in order:
+1. the INSTALL_TO directory, if set, 
+1. a previously installed executable location:  ~which file~, or
+1. the user's HOME/bin
+An non-existent  installation directory is gratuitously  created if it
+does not previously exist.
+
+*** a file
+
+An installation file looks like:
+: install_bin combine
+: install_app include
+
+Where    the   available    user    commands    are   the    functions
+*install_{bin,app}*,   where  the   _bin   installs   /file/  in   the
+INSTALL_TO/{file}lib. The _app command  installs the file directly in
+the  INSTALL_TO/file.  An  /app/  is a  script  or other  executable,
+whereas a  /bin/ is really  a shell  library.  The /lib/  directive is
+reserved for  future expansion  where a  file may  need to  be linked,
+moved, or copied to the run-time environment's ~/lib~ directory.
+
+*** the commands
+
+If using both /combine/ and /install/ features, from the parent directory
+from the _INC and _SRC directories, then:
+
+: $ source combinelib # once in the terminal session, and 
+:   ...               # anytime later
+: $ install_combine   # installs the combine result
+
+Or if just using the installation by itself
+
+: $ install_one  name # from name.install
+
+** conventions
+
+Some conventions are required:
+
++ OrgMode files for combining are tangled to the local *./inc*, 
+  the default COMBINE_FROM directory.  Here's an example:
+
+   : #+BEGIN_SRC sh :tangle ./inc/stack.0
+
++ the installation location is
+    - INSTALL_TO
+    - an existing executable file on the user's PATH
+    - HOME/bin
+    - if neither exist prior to installation, they are created just in
+      time.
+
++ the command
+
+  : $ install_combine
+
+does the  combining and  installing, given appropriate  file fragments
+and install scripts.   There may be multiple  installations per source
+directory.  On  the other hand.   Since there is only  one destination
+base per  install file, multiple  installation targets may  be managed
+from the same sources.   See the customization below.
+
+
++ master files have a unique suffix, COMBINE_SUF, defaulting to  *all*
+
++ the combined product has a unique suffix, COMBINE_OUT, defaulting to
+  *out*
+
++ in all cases, the suffix for error files (stderr) is *.err*
+
++ there is  no requirement (other than good taste)  on other prefix or
+  suffix names.  In  this sense, "good taste" includes  the concept of
+  no spaces in a file name
+
+* Combine Code
+ 
+The /combine/ code comes in two pieces:
+
+1. the workhorse  is the *include* script,  which recursively includes
+   named file fragments into a master file.
+
+1.  a  small  function   family:  *combinelib*,  providing  name-space
+   management with shell variables while wrapping the include process.
+
+** installation
+
+This fragment combines (!) the /combine/ and /install/ families into a
+single library  *combinelib*.  Since a  first-time user will  not have
+the  library  already  installed, the  simple  bootstrap  instructions
+follow, which should add to one's appreciation of the method.
+
+The ~install_bin~  command anticipates  an output  file: /combine.out/
+and looks  for or  creates a  *bin* directory  to hold  the executable
+*combinelib*
+
+Moreover,  this  distribution includes  a  copy  of necessary  utility
+functions from the [[http://mcgowans.org/marty3/commonplace/software/shelf.html][SHELF]] Standard.  At some glorious future date, this
+will incorporate sourcing that library,  rather than having copied its
+code, as a prerequisite.
+
+#+BEGIN_SRC sh :tangle ./src/combine.install :comments both :padline no
+    install_bin combine
+    install_app include
+#+END_SRC
+
+** include
+
+The include script.  Look for an /iawk/ or [[https://www.mankier.com/1/igawk][gawk]] reference on the web.
+The simple syntax is:
+: @include filename
+and it is recursive.   
+
+This file needs no combining.  It is a shell script.
+
+#+BEGIN_SRC sh :tangle ./inc/include.all :comments both :padline no
+# 
+cat ${*:--} | awk '
+
+BEGIN   { stderr = "/dev/stderr"
+          logfil = "include.not"
+          errfmt = "TRACE include.%s(%s)\n"
+}
+function this_line (res) {
+
+    printf "%3d %d %s\n", NF, res, $0 > stderr
+    return res
+}
+function with_file (file) {
+
+    printf errfmt, "with_file", file > stderr
+    if (this_line( (getline line < file) == -1 )) {
+
+        printf "needfile %s\n", file > logfil
+        print
+    } else {
+
+        # side effect, "file" is opened, so,
+        # close it to be able to read it:
+        close(file)
+
+        printf errfmt, "about to INCLUDE", file > stderr
+        system( "include " file)
+    }
+    # and since we may have just read it, close it again 
+    # if we opened it, or for the first time if we did not.
+    # why? an app may include a file more than once.
+    close(file)
+}
+function may_include() {
+
+   # printf errfmt, "may_include", ""  > stderr
+   # HTML Comment, replace with     7/26/15, mcgowan@alum.mit.edu
+   # return this_line($1 == "<!--" && $2=="include" && $4 == "-->")
+   # iawk-style include, not bound simply awk programs
+
+     return this_line($1 ~ /^@include$/)
+}
+     {
+        if ( may_include() ) { 
+            # with_file( $3 ), ex  7/26/15
+            # e.g.  @include filename
+            with_file( $2 )
+            next
+        }
+      }
+NF    {
+         print 
+      }
+'
+#+END_SRC
+
+** combine family
+The *combinelib*  is built in  a few  pieces.  First is  the copyright
+notice and an entry-point, main function.
+*** combine_mk
+
+This is the top /combine/ function.
+#+BEGIN_SRC sh :tangle ./inc/combine.0 :comments both :padline no
+  copyright_combine () 
+  { 
+      comment "Copyright (C) 2016, JYATL - Just Yet Another Testing Lab";
+      comment "mailto: mcgowan (at) alum DOT mit DOT edu";
+  }
+  combine_mk () 
+  { 
+      : SRC and INC are preferably sibling directories
+      : he OrgMode TANGLE puts fragments w/o any sense of changed or not;
+      : run from the INC directory, 
+      : this combines the SUF files, putting changed files in SRC
+
+      local combine_to=$(cd $COMBINE_TO; pwd)
+
+      pushd ${COMBINE_FROM}
+      for f in *.${COMBINE_SUF};
+      do
+          mv_orrm $(combine_bunch $f) $combine_to
+      done;
+      popd
+  }
+#+END_SRC
+
+The *combine_bunch* function leaves it's output on ~stdout~, where it's
+used as the file-name argument to *mv_orrm* (move or remove) to the second,
+directory argument.
+
+*** combine functions
+
+This is the remainder of the *combinelib* function library.
+
+Other, copied utility functions follow.
+
+The manual procedure to collect those functions is also being
+formalized with functions and a library.
+
+#+BEGIN_SRC sh :tangle ./inc/combine.1 :comments both :padline no
+  combine_bunch ()
+  {      
+      : ~ file.SUF
+      report_notcalledby combine_mk && return 1
+      report_notargcount 1 $# {file}.${COMBINE_SUF} && return 2;
+      report_notfile $1 && return 3;
+      set ${1%.*}.{${COMBINE_SUF},${COMBINE_OUT},err}
+
+      trace_call $*
+
+      combine_include $* &&   echo $2
+      ls -lrt $* 1>&2
+
+  }
+  mv_orrm  ()   
+  { 
+
+         report_notargcount 2 $# && return 1
+         trace_call $*
+         mv_ifdiff $1 $2/$1
+         [[ -f $1 ]] && rm -f $1
+  }
+  mv_ifdiff () 
+  { 
+      report_notfile $1 && return 1 
+      : mv 1 to 2 if files DONT compare;
+      trace_call $*;
+      touch $2;
+      cmp $1 $2 > /dev/null || mv $1 $2
+  }
+  combine_include () 
+  {
+       : ~ INPUT Output Error
+       : fails if "include.not" has data, the ERR is the fence.
+       report_notargcount 3 $# Input Output Error tmp && return 1
+       report_notfile $1 && return 2
+       trace_call $*
+       rm -f include.not
+       include $1 2>$3 >$2
+       
+       [[ -s include.not ]] && { 
+            rm -f $3
+            cat include.not 1>&2
+            return 3
+       }
+       return 0
+  }
+  combine_init () 
+  { 
+      trace_call $*;
+      om_iam;
+      : ${COMBINE_FROM:=./inc}
+      : ${COMBINE_TO:=./src}
+      : ${COMBINE_SUF:=all}
+      : ${COMBINE_OUT:=out}
+      install_init
+  }
+#+END_SRC
+
+*** combine combined
+#+BEGIN_SRC sh :tangle ./inc/combine.all :comments both :padline no
+@include combine.0
+@include combine.1
+@include install.0
+@include install.1
+@include install.2
+combine_init 1>&2
+#+END_SRC
+
+While this is a good rule, occasionally it may be broken.
+
+: each file should have one syntax, either include or script.
+
+* Install Code
+
+The  /install/ family  is  initially installed  here  by a  boot-strap
+process.  Failing to find an already installed library or application,
+this installation  creates an  *INSTALL_TO* directory,  defaulting to
+~HOME/bin~ if it doesn't exist, otherwise links the executable library
+or application to that directory.
+
+Since  this process  now adheres  to  the combining  process, it  uses
+conventions established there, and adds just a few of its own.
+
+** install installation
+
+Install  is now  part  of the  /combine/ family;  it  has no  separate
+installer.   And its  combining is  done together  with the  /combine/
+family as part of the *combinelib*.
+
+One's work should  always have a large  [[https://en.wikipedia.org/wiki/Chicken_or_the_egg][chicken-or-egg]] component.  So,
+the bootstrap process to install the installation code is:
+
+** testboot.sh
+#+BEGIN_SRC sh :tangle ./testboot.sh 
+
+# --------- while testing in the same shell, clean up residuals	--
+
+unset $(
+    set | awk -F= '     \
+          $1 ~ /^COMBINE_/ ||   \
+               /^combine/  ||   \
+               /^install/  { sub(/[(][)]/," "); print $1 }
+
+          '
+      ) 
+
+. ./bootstrap.sh
+
+
+#+END_SRC
+** bootstrap.sh
+#+BEGIN_SRC  sh :tangle ./bootstrap.sh 
+
+#  ------------------------- preserve the original PATH	--
+
+: ${OPATH:=$PATH}
+
+# -------------------------------- development defaults	--
+
+#  EDIT to suit your Needs
+COMBINE_FROM=./inc
+COMBINE_TO=./src
+COMBINE_SUF=all
+COMBINE_OUT=out
+INSTALL_TO=$HOME/Dropbox/bin
+
+pushd $COMBINE_FROM
+
+    # ---------------------------- source the fragments	--
+
+    combine_inc=$(pwd)
+    
+    for file in {install,combine}.?;  do
+       [[ -f $file ]] || continue
+       . $file
+       echo === $file ===
+    done
+    
+   # --------------------- here is a bootstrap INCLUDE	--
+
+    ln -f include.all include
+    chmod +x include
+   
+   # ------------------------------ put it on the PATH	-- 
+
+    PATH=$combine_inc:$OPATH
+popd
+# ------------------------------------- simulate Source	--
+
+combine_init
+# --------------------------------- do the installation	--
+
+install_combine
+# ------------------------ remove the bootstrap include	--
+
+rm -f $combine_inc/include
+# ------------------------------------ restore the PATH	--
+
+PATH=$INSTALL_TO:$OPATH
+
+#+END_SRC
+** instructions
+1. since this  is maintained in emacs OrgMode, tangle  this file: 
+   : ~C-c C-v C-t~ 
+   which dumps these contents into the *inc* directory
+1. inspect, if  necessary, edit the bootstrap  script, particularly to
+   set the  location of the INC  and SRC directories, the  SUF and OUT
+   file suffixes, corresponding to your own choices.  
+1. from the shell, do the bootstrap combining
+   : . ./bootstrap.sh
+   creates  *.out* files  from *.all*  and sources  workable functions
+   into the current shell
+1. you are instructed to run this command, which you may do at will.
+   : $ compile_install
+
+This may have to be repeated as functions are added here.  Routinely, 
+the installation here, as elsewhere is, after tangling:
+
+: $ combine_mk
+: $ indir src source {libname}.install
+
+is now shortened to:
+
+: $ install_combine
+
+The  combining  facets  have  been  factored out.   The  code  in  the
+COMBINE_FROM  directory  may   be  treated  as  the   native,  raw,  or
+version-controlled components.  This requires accommodations:
+
+1.  ability  to  re-target  or  re-host  the  tangled  code  has  been
+   accomplished  by  use  of  the COMBINE_FROM  and  COMBINE_TO  shell
+   variables.
+
+1. separate any wrong-way tools connections from a *combinelib* and an
+   *installlib*.   Either  that,  or  combine  the  two  libraries  as
+   families in a single lib.
+
+Once manually  installed, the re-installation script  is the prototype
+for any  other tangled code.   This installation format  also respects
+the second requirement above.
+
+*** install install
+
+** Install Code
+
+The ~install_combine~ function  is only useful for code,  such as this
+which has  been produced from either  an OrgMode tangle process  OR by
+any other text editor where  the development environment has access to
+the [[../combine/combine.org][combinelib]].   The products  of the  ~combine_all~ step  become the
+general user source view of the components.
+
+*** User Functions
+#+BEGIN_SRC sh :tangle ./inc/install.0 :comments both :padline no
+  copyright_install ()
+  { 
+      comment "Copyright (C) 2016, JYATL - Just Yet Another Testing Lab";
+      comment "mailto: mcgowan (at) alum DOT mit DOT edu";
+  }
+install_app () 
+{
+    install_executable $1.$INSTALL_SRC $1
+}
+install_bin () 
+{ 
+    install_executable $1.$INSTALL_SRC ${1}lib
+}
+install_one () 
+{
+    : ~ handle
+    report_notargcount 1 $# handle               && return 1
+    report_notfile $INSTALL_FROM/$1.$INSTALL_CMD && return 2
+
+    indir $INSTALL_FROM . $1.$INSTALL_CMD
+}
+install_combine () 
+{
+    : ~ 
+    : from the package directory
+    : 
+    combine_mk
+    pushd $INSTALL_FROM >/dev/null  
+    : installation instructions
+    for ins in *.$INSTALL_CMD; do . $ins; done
+    popd > /dev/null
+}
+#+END_SRC
+
+*** Family Functions
+
+#+BEGIN_SRC sh :tangle ./inc/install.1 :comments both :padline no
+file_append ()    { local file=$1; shift; $@ >> $file; }
+install_duplog () { ${*:-echo}  $(needir $HOME/lib)/duplicateWhich.log; }
+install_executable () 
+{
+    chmod +x $1
+    : defend against multiple "which"s
+    set $1 $(install_needex ${2:-${1}lib})
+    [[ $# -gt 2 ]] && { 
+          file_append $(install_duplog) echo install_executable $*
+    }
+    doit ln  -f $1 $2 1>&2
+}
+install_needex () 
+{
+    : ~ file
+    : return name of INSTALL_TO/file, if the variable is set,
+    : ...     or if previously installed, return {which file}
+    : ...     or HOME/bin/file.
+    : the directories are created if needed
+
+    report_notargcount 1 $# possible executable && return 1
+    trace_call $*
+
+    [[ -n "$INSTALL_TO" ]] && {
+
+        echo $(needir $INSTALL_TO)/$1
+        return
+    }
+    
+    which $1 && return
+
+    echo $(needir $HOME/bin)/$1 
+   
+}
+install_init ()
+{
+    : INSTALL_FROM defaults either to COMBINE_TO, or "./src"
+    : carefully note that INSTALL_FROM is set if not yet, while
+    : COMBINE_TO is NOT gratuitously set.  ":=" vs ":-"
+    : similarly for the INSTALL_SRC and COMBINE_OUT suffixes.
+    : ------------------------------------- directories	--
+    : ${INSTALL_FROM:=${COMBINE_TO:-./src}}
+    : ${INSTALL_TO:=""}
+    : ------------------------------------- file suffix	--
+    : ${INSTALL_SRC:=${COMBINE_OUT:-out}}
+    : ${INSTALL_CMD:=install}
+
+    om_iam
+}
+#+END_SRC
+*** COMMENT Utility Functions
+#+BEGIN_SRC sh :tangle ./inc/install.2 :comments both :padline no
+comment () 
+{ 
+    echo $* 1>&2
+}
+doit () 
+{ 
+    echo $* 1>&2;
+    $*
+}
+indir () 
+{ 
+    report_notdirectory $1 && return 1;
+    ignore pushd $1;
+    shift;
+    eval $@;
+    ignore popd
+}
+fun_from () 
+{ 
+    trace_call $*;
+    : reconcile patterns to fuse;
+    cat ${*:--} | awk ' 
+        $2 ~ /^\(\)$/     { print $1 } 
+             /^function / { print $2 }
+    '
+}
+functions () 
+{ 
+    trace_call $*;
+    fun_from $* | printfirst
+}
+isfunction () 
+{ 
+    trace_call $*;
+    declare -f $1 > /dev/null
+}
+myname () 
+{ 
+    echo ${FUNCNAME[${1:-1}]}
+}
+needir () 
+{ 
+    trace_call $*;
+    [[ -d $1 ]] || mkdir -p $1;
+    echo $1
+}
+om_generic () 
+{ 
+    : ~ fun { sub arg ... };
+    : preferably executes FUN_SUB arg ...;
+    : or FUN_HELP;
+    : ====================================;
+    local fun=$1;
+    shift;
+    : only when a function is first use thru the model;
+    declare -f ${fun}_firsttime > /dev/null && ${fun}_firsttime;
+    [[ $# -lt 1 ]] && { 
+        ${fun}_help 2> /dev/null;
+        return
+    };
+    local f=${fun}_$1;
+    shift;
+    declare -f $f > /dev/null 2>&1 || { 
+        ${fun}_help 2> /dev/null;
+        return
+    };
+    $f $*
+}
+om_iam () 
+{ 
+    : user identifies themself as an OM object;
+    set $(myname 2);
+    set ${1%_init};
+    report_notcalledby ${1}_init && return 1;
+    : create the OM function;
+    eval "$1 () { om_generic $1 \$*; }";
+    : every family has a list of members;
+    local l=${1}_list;
+    declare -f $l > /dev/null 2>&1 || { 
+        eval "$l () { (sfg ^${1}_; sfg _${1}$) 2>/dev/null; }"
+    };
+    : every family may have shell varialbles;
+    local v=${1}_vars;
+    local V=$(UC $1);
+    declare -f $v > /dev/null 2>&1 || { 
+        eval "$v () { set | grep ^${V}_ 2>/dev/null; }"
+    };
+    : and a default help function when one doesnt exist;
+    local h=${1}_help;
+    declare -f $h > /dev/null 2>&1 || { 
+        eval "$h () { echo $1 functions, variables:; ($v; $l) | sed 's/^/  /'; }"
+    };
+    : shows Copyright when library is sourced.;
+    local f=${1}_firsttime;
+    eval "$f () { copyright_${1}; unset $f; }";
+    : and displays the help;
+    ${1}_help
+}
+printfirst () 
+{ 
+    trace_call $*;
+    awk '!printed [$1]++' $*
+}
+qmoved () 
+{ 
+    [ "$PWD" == "${1:-$PWD}" ] && return;
+    echo MOVED to $PWD
+}
+report_notargcount () 
+{ 
+    [[ $2 -ge $1 ]] && return 1;
+    report_usage need at least $1 arg/s: $(shift 2; echo $*)
+}
+report_notcalledby () 
+{ 
+    set ${1:-/dev/null} $(myname 3) non-Existant-function;
+    [[ $2 == $1 ]] && return 1;
+    report_usage was NOT called by $1.
+}
+report_notfile () 
+{ 
+    [[ -f $1 ]] && return 1;
+    report_usage $1 is NOT a file
+}
+report_usage () 
+{ 
+    comment USAGE $(myname 3): $*
+}
+setenv () 
+{ 
+    [[ $# -lt 1 ]] && return;
+    local na=$1;
+    shift;
+    eval $na=\"$*\";
+    export $na
+}
+sfg () 
+{ 
+    trace_call $*;
+    set | functions | grep -i ${*:-.}
+}
+trace_call () 
+{ 
+    trace_stderr "$@"
+}
+trace_off () 
+{ 
+    eval "trace_call () { return; }";
+    trace_set trace_off trace_on
+}
+trace_on () 
+{ 
+    eval "trace_call () { trace_stderr \"\$@\"; }";
+    trace_set trace_on trace_off
+}
+trace_set () 
+{ 
+    case $1.$2 in 
+        trace_on.trace_off | trace_off.trace_on)
+            setenv TRACE_STATE ${1};
+            setenv TRACE_NOT ${2}
+        ;;
+        trace_on.*)
+            trace_set $1 trace_off
+        ;;
+        trace_off.*)
+            trace_set $1 trace_on
+        ;;
+    esac
+}
+trace_stderr () 
+{ 
+    pa=${FUNCNAME[2]:-COMMANDLINE};
+    gr=${FUNCNAME[3]:-COMMANDLINE};
+    printf "TRACE %s\t@ %s %d  ( %s )\n" "$pa" "$gr" $# "$*" 1>&2
+}
+
+#+END_SRC
+
+* User Customization
+A user who wants to customize the COMBINE variables need only assign
+them before sourcing the ~combinelib~, for example:
+#+BEGIN_EXAMPLE
+
+    COMBINE_FROM=../include
+    COMBINE_TO=../src
+    COMBINE_SUF=txt       # no "." in suffix names
+    COMBINE_OUT=out       # same as default for clarity
+    source combineline    # new variables apply
+   
+#+END_EXAMPLE
+
+* Reported errors
+
++ combine_mk
+    1. internal function called manually
+    1. internal function called with insufficient arguments
+    1. internal function called with non-file argument
+
++ include
+    1. writes list of un-found files in the *include.not* file
+
+* Rationale
+
+These  functions were  originally built  to simplify  the products  of
+/tangling/, or [[http://orgmode.org/org.html#Specific-header-arguments][extracting source code]] from an OrgMode source file.  As
+an example  of *combinelib* usage,  an emacs user /tangles/  this file
+into all  the other file  fragments needed to ~combine~  and ~install~
+the  function  families.  
+
+With the  idea of  sharing on  [[http://github.com/applemcg/combine][Github: applemcg/combine]],  then tangled
+fragments had  to fit a  generally-accessible framework. Thus  was born
+the notion of the directory and file-suffix naming conventions.
+
+While /tangle/ files are always overwritten, not every /combined/ file
+may change.  The modification time  on a COMBINE_OUT file is unchanged
+if its contents are unchanged.
+
+Originally the two families were  separate libraries.  I combined them
+for a few reasons:
+
+1. to test the notion a library with a single function family may join
+   with another, closely related family.
+1. to  discover how difficult it  was to add seams:  here for example,
+   rather than have  a single name for the products  of combination to
+   be stuff to install, split the  name to allow use of either package
+   without  the  other.   specifically have  INSTALL_FROM  default  to
+   COMBINE_TO.
+1.  to  eliminate redundant  use  of  many  functions from  the  [[http://mcgowans.org/marty3/commonplace/software/shelf.html][SHELF
+   Standard]].   And  this motivates  a  piece  of  the practice:  in  a
+   library-rich  environment,  have  a  process  which  picks  up  the
+   disparate functions into a  single library or application depending
+   on  no other  function  libraries, and  needs only  system-supplied
+   tools.  Tools to do this discovery are in *applib*
+
+And I've discovered a saying: /It takes two to TANGLE/
+
+
+* COMMENT Lessons 						     :tangle:
+
+I've learned, of historical note, and needs revision.
+
+With this file, I've learned how to have code live with it's documentation, and
+almost install it.  That lesson awaits understanding how to hang a "hook" while
+[[http://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][extracting the source code]].  
+
+Here are the steps I go thru:
+1. edit the code or it's documentation. (may use C-c ' in a code block),
+1. "tangle" the code block(s) -- see the link above, which ship the code off
+   to it's place to live.
+1. execute the 'installation' instructions below. these are only 
+   in the Org file, since they're hidden from the HTML output.
+   alternatively, do the same thing from a terminal window, where
+   the commands may be tested independently of emacs/OrgMode.
+
+Hanging the hook: /org-babel-post-tangle-hook/ promises to allow
+post-processing, i.e. making the ../bin files executable and linking
+the text files to the adjacent ../lib directory.
+
+And, just maybe, this should become the ASSERTlib, change every instance
+of report_ to assert_?
+
+* COMMENT Commands
+
+** information
+
+: $ combine_all
+: $ indir .untangle . tangle.install
+
+OR
+: $ install_tangle
+
+and remember tangle command : C-c C-v t
+
+* References
+
+1. [[http://mcgowans.org/marty3/commonplace][Commonplace Book]], of Marty McGowan
+   http://mcgowans.org/marty3/commonplace
+
+1. [[http://mcgowans.org/marty3/commonplace/software/shelf.html][SHELF Standard]].
+   http://mcgowans.org/marty3/commonplace/software/shelf.html
+
+1. [[https://github.com/applemcg/combine][Github combinelib Repo]]
+   https://github.com/applemcg/combine
+
