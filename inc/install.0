@@ -1,5 +1,4 @@
-# User Functions
-# [[file:~/git/shelf/combine.org::*User%20Functions][User\ Functions:1]]
+# install User Functions
 copyright_install ()
   { 
       comment "Copyright (C) 2016, JYATL - Just Yet Another Testing Lab";
@@ -32,4 +31,4 @@ install_combine ()
     for ins in *.$INSTALL_CMD; do . $ins; done
     popd > /dev/null
 }
-# User\ Functions:1 ends here
+# User Functions:1 ends here

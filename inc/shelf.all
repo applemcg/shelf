@@ -3,4 +3,5 @@
 @include shdoc.fam
 @include trace.fam
 @include fam.fam
-@include shelf.fam
+@include shelf.ini
+

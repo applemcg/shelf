@@ -1,0 +1,77 @@
+UC () 
+{ 
+    : file STDIN;
+    : arguments minimum 0;
+    : returns list in UPPER CASE;
+    : optional command arguments are folded otherwise stdin;
+    [ $# -gt 0 ] && { 
+        echo $* | tr a-z A-Z
+    } || { 
+        cat - | tr a-z A-Z
+    }
+}
+comment () 
+{ 
+    echo $* 1>&2
+}
+functions () 
+{
+    : ~ STDIN or file ...
+    : lists first instance of function definition
+    trace_call $*;
+    cat ${*:--} | awk ' 
+        $2 ~ /^\(\)$/     { print $1 } 
+             /^function / { print $2 }
+    ' | printfirst
+}
+printfirst () 
+{
+    : ~ STDIN or file ...
+    : lists line with first INSTANCE of first FIELD 
+    trace_call $*;
+    awk '!printed [$1]++' $*
+}
+ignore () 
+{
+    : ~ cmmd args ...
+    : returns STATUS, but not STDOUT
+    $@ > /dev/null
+}
+quietly ()
+{
+    : ~ cmmd args ...
+    : returns STATUS, but not STDERR
+    $@ 2>/dev/null
+}
+isfunction () 
+{
+    : ~ function
+    : returns TRUTH of argument as FUNCTION
+    declare -f $1 > /dev/null
+}
+myname () 
+{
+    : ~ [n]
+    : returns name of caller OR callers caller ...
+    echo ${FUNCNAME[${1:-1}]}
+}
+setenv () 
+{
+    : ~ NAME value ...
+    : exports NAME to the environment,
+    : set to value ...
+    [[ $# -lt 1 ]] && return;
+    local na=$1;
+    shift;
+    eval $na=\"$*\";
+    export $na
+}
+sfg () 
+{
+    : ~ [pattern]
+    : Set Functions Grep pattern
+    : returns FUNCTIONS in current ENVIRONMENT with pattern
+    : e.g.   sfg PIPE wc   counts number of functions
+    trace_call $*;
+    set | functions | grep -i ${*:-.}
+}

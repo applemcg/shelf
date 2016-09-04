@@ -1,5 +1,4 @@
-# Family Functions
-# [[file:~/git/shelf/combine.org::*Family%20Functions][Family\ Functions:1]]
+# install Functions
 file_append ()    { local file=$1; shift; $@ >> $file; }
 install_duplog () { ${*:-echo}  $(needir $HOME/lib)/duplicateWhich.log; }
 install_executable () 
@@ -28,11 +27,9 @@ install_needex ()
         echo $(needir $INSTALL_TO)/$1
         return
     }
-    
     which $1 && return
 
     echo $(needir $HOME/bin)/$1 
-   
 }
 install_init ()
 {
@@ -47,6 +44,6 @@ install_init ()
     : ${INSTALL_SRC:=${COMBINE_OUT:-out}}
     : ${INSTALL_CMD:=install}
 
-    om_iam
+    fam_iam
 }
 # Family\ Functions:1 ends here

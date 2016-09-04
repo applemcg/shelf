@@ -1,4 +1,13 @@
-# [[file:~/Dropbox/commonplace/software/shreadme.org::*reportlib,%20working][reportlib\,\ working:1]]
+# report family
+copyright_report () 
+{ 
+    comment "Copyright (C) 2015-2016, JYATL - Just Yet Another Testing Lab";
+    comment "mailto: mcgowan (at) alum DOT mit DOT edu";
+}
+report_init ()
+{
+    fam_iam
+}
 function report_emptyfile
 { 
     [[ -s $1 ]] && return 1;
@@ -8,11 +17,6 @@ function report_isfile
 { 
     [[ -f $1 ]] || return 1;
     report_usage $1 IS a file and should not be
-}
-function report_needcount
-{ 
-    [[ $2 -ge $1 ]] && return 1;
-    usage need at least $1 arg/s $(shift 2; echo $*)
 }
 function report_notbase
 { 

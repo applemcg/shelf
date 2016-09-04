@@ -10,7 +10,7 @@ COMBINE_FROM=./inc
 COMBINE_TO=./src
 COMBINE_SUF=all
 COMBINE_OUT=out
-INSTALL_TO=$HOME/Dropbox/bin
+INSTALL_TO=./src/../bin
 
 pushd $COMBINE_FROM
 
