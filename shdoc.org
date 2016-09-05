@@ -15,18 +15,6 @@ writer can supply information to describe the functions arguments, any
 files  that are  read, any  return  values, and  side-effects such  as
 changing the process state. or writing on files.
 
-At this time  (September 2016), there  is work in progress  to build a
-meta-language of nouns  to collect useful data from  the shdoc format.
-A sneak peek at those words:
-
-#+BEGIN_EXAMPLE
-    arguments  decision  effect   example  file       
-    function   ref       returns  reads    writes
-#+END_EXAMPLE
-
-This work  builds an information  structure for functions  suitable to
-convert into a browser interface, capable of user/developer navigation
-similar to the established scripting languages.
 
 * History, Precendent
 
@@ -275,20 +263,37 @@ Note *shd_each* produces the result for only one function, if only to print
 a single function body; it insists on being called by *shdoc*.
 
 Here's a question:  /why doesn't shd_each have any shdoc comments?/
+* Little Language
+
+At this time  (September 2016), there  is work in progress  to build a
+meta-language of nouns  to collect useful data from  the shdoc format.
+A sneak peek at those words:
+
+#+BEGIN_EXAMPLE
+    arguments  decision  effect   example  file       
+    function   ref       returns  reads    writes
+#+END_EXAMPLE
+
+This work  builds an information  structure for functions  suitable to
+convert into a browser interface, capable of user/developer navigation
+similar to the established scripting languages.
 
 * References
 
 If reading on paper, this document is found on-line at
 [[http://mcgowans.org/marty3/commonplace/software/shdoc.html]] 
 
+** external 
+
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
 + the [[./combine.org][Combine facility]]
+
+** SHELF local
 + the [[./shelf.org][SHELF Standard]]
-+ the [[./README.org][Rationale and Practice]]
++ the [[./README.org][Shelflib -- User Guide]]
 + the [[./famguide.org][fam function family]]
 + the [[./shdoc.org][shdoc function family]]
 + the [[./trace.org][trace function family]]
 + the [[./utilguide.org][utility function group]]
-
 
 #+INCLUDE: ./author.org

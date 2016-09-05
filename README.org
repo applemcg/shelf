@@ -1,33 +1,45 @@
 #+INCLUDE: ./universalOrgPreface.txt
 
-#+TITLE: SHELF Rationale and Practice
+#+TITLE: Shelflib -- User Guide to SHELF practice
 
 * COMMENT TODO
 
-** TODO add OrgMode output format from shdoc for HTML function ref!
-   for which i thank the shdoc work: ~/src/shdoc from '09
-   this implies a LITTLE language to control side-effects
+** TODO add OrgMode output format 
+   from shdoc for HTML function ref!  for which i thank the shdoc
+   work: ~/src/shdoc from '09 this implies a LITTLE language to
+   control side-effects
+** TODO follow shdoc link 
+   when this work challenges simon laube's use, and is sufficient to
+   present to him.  what should hte name be?
 
 * Scope
 
-This document supports  the [[./shelf.org][SHELF Standard]].  In  addition to providing
-rationale for the  standard, it is the reader's guide  to the function
-families which support  an implementation of the  standard.  The novel
-feature of the implementation is  the /function family/.  This feature
-introduces nothing new  to shell syntax or ability  to access function
-libraries.  It  does set a  practice to organize  function collections
-inside a function library.
+This library supports the [[./shelf.org][SHELF Standard]].  Since the the SHELF
+Standard uses /function families/, this is the User Guide for the
+/shelflib/.  As such it introduces four function families and a
+utility group of functions.  Each of these five (four familes, one
+group) have their own User Guide,
 
-Enabled by the /function family/,  a ~shelflib~ contains four function
-families  and a  utility group  to support  the SHELF  standard.  Each
-family and group has a separate user guide.
+The /function family/ introduces nothing new to shell syntax or
+ability to access function libraries.  It does set a practice to
+organize function collections inside a function library.
+
+From a practical stand point, each family or group has its own source
+file.  These are combined into a single shell library ~shelflib~
+and installed in the user's runtime.   Instructions follow.
+
+When installed, the user has roughly 80 bash shell functions to 
+extend the practice to their own work.
+
+If you have not yet read the  [[./shelf.org][SHELF Standard]], now would be a good
+time before proceeding.
 
 * Families
 
-These are the four families and utility group of functions.  Each section
-introduces the family or group to indentify it's distinct purpose in 
-support of the  [[./shelf.org][SHELF Standard]].   The next section introduces the 
-respective User Guides.
+These are the four families and utility group of functions.  Each
+section introduces the family or group to indentify it's distinct
+purpose in support of the [[./shelf.org][SHELF Standard]].  The next section introduces
+the respective User Guides.
 
 ** fam --   the family model for naming functions
 
@@ -162,6 +174,7 @@ These are listed in order of encounter.
 
 + [[./famguide.org][Family User Guide]]
 
+** fam family
 ** report family
 *** reportlib, main
 
@@ -361,6 +374,7 @@ report_nottrue ()
 
 #+END_SRC
 
+** shdoc family
 ** trace family
 
 ** utility functions
@@ -451,10 +465,14 @@ And it's initialized by the only unique function in the library:
 
 * References
 
+
+** external
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
 + the [[./combine.org][Combine facility]]
+
+** SHELF local
 + the [[./shelf.org][SHELF Standard]]
-+ the [[./README.org][Rationale and Practice]]
++ the [[./README.org][Shelflib -- User Guide]]
 + the [[./famguide.org][fam function family]]
 + the [[./shdoc.org][shdoc function family]]
 + the [[./trace.org][trace function family]]
