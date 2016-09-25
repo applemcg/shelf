@@ -1,4 +1,4 @@
-#+INCLUDE: ./universalOrgPreface.txt
+#+INCLUDE: ./universalOrgPreface.org
 
 #+TITLE: Family User Guide
 
@@ -149,8 +149,11 @@ http://github.com/applemcg/shelf/blob/master/famguide.org
 + the [[./shelf.org][SHELF Standard]]
 + the [[./README.org][Shelflib -- User Guide]]
 + the [[./famguide.org][fam function family]]
++ the [[./report.org][report function family]]
 + the [[./shdoc.org][shdoc function family]]
 + the [[./trace.org][trace function family]]
 + the [[./utilguide.org][utility function group]]
 
 #+INCLUDE: ./author.org
+
+** 

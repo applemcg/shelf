@@ -1,0 +1,223 @@
+#+INCLUDE: ./universalOrgPreface.org
+
+#+TITLE: Report Functions  User Guide
+
+* COMMENT TODO
+
+* Scope
+
+This is User Guide for the Report Function Family, supporting the
+[[./shelf.org][SHELF Standard]].
+
+The Report family supplies functions to make assertions about function
+arguments.
+
+Report functions typically make a negative assertion, "something is
+NOT so" and return an error to a calling function.
+: firstFile () { report_notfile $1 && return 1; ... }
+
+There are report functions for each of the available [[http://tldp.org/LDP/abs/html/fto.html][test functions]],
+as well as other useful features, such as arugument count, called by
+function.
+
+In order to report the truth of a negative assertion, the report
+functions return false (non-zero) when the tested condition is true.
+Here's the simple example:
+#+BEGIN_SRC 
+report_notfile () 
+{ 
+    [[ -f $1 ]] && return 1;
+    report_usage $1 is NOT a file
+}
+#+END_SRC
+
+* Functions
+
+** report_usage
+This is used in all testing functions to report when the user function
+is returning TRUE, writing an appropriate message on the *stderr*.  It
+reports the name of it's caller's caller.  When used in a ~report_~
+function, then, /report_usage/ reports the name, not of the reporting
+function, but the function which uses it.
+
+#+BEGIN_SRC 
+report_usage () 
+{ 
+    comment USAGE $(myname 3): $*
+}
+#+END_SRC
+Note the use of *myname*; it calls up the function calling stack.  So
+that ~myname 3~ is not my caller, but my caller's caller.  In effect,
+my caller is reporting the name of it's calling function.
+
+Here is an example explaining what's going on when "a" calls "b",
+which calls "c", reporting in a depth first manner.
+
+#+BEGIN_EXAMPLE
+a () 
+{ 
+    set myname 1;
+    b;
+    echo $($1): $* = $($*)
+}
+b () 
+{ 
+    set myname 2;
+    c;
+    echo $($1): $* = $($*)
+}
+c () 
+{ 
+    set myname 3;
+    echo $($1): $* = $($*)
+}
+$ a
+c: myname 3 = a
+b: myname 2 = a
+a: myname 1 = a
+#+END_EXAMPLE
+** regular test functions
+Here a table will suffice.  For example the ~report_notdirectory~ function,
+tests by the lower case letter "d":
+#+BEGIN_SRC 
+function report_notdirectory
+{ 
+    [[ -d $1 ]] && return 1;
+    report_usage $1 is NOT a Directory
+}
+#+END_SRC
+These functions test their single argument and return the truth of the 
+negative assertion:
+
+#+INCLUDE: ./reportble.org
+
+** alternate, composite functions
+
+These are called *report_*\function, e.g. report_emptyfile,
+and return the truth of the assertion, and if true, a statement on the truth
+through [[report_usage]]
+
++ emptyfile -- is the file argument empty, zero size
++ isfile -- is the argument an ordinary file
++ notargcount -- requires two arguments, thusly:
+: report_notargcount 2 $# function file ... & return 1
+The calling function requires at least two arguments, and maybe more.
+The usage statement reports the first argument is a function, and the 
+second a file.  This call may be followed by:
+: report_notfunction $1 && return 2
+: report_notfile $2 && return 3
++ notcalledby -- the calling function identifies who it wants to be
+called by:
+#+BEGIN_EXAMPLE
+report_notcalledby () 
+{ 
+    set ${1:-/dev/null} $(myname 3) non-Existant-function;
+    [[ $2 == $1 ]] && return 1;
+    report_usage was NOT called by $1.
+}
+#+END_EXAMPLE
+Here the using function announces who it is serving:
+: function usesMe () { ...; b [ args ... ] ; ...; }
+: function b () { report_notcalledby  usesMe && return 1; ... }
+so, if called by another function, "b" fails.
++ notcommand -- true if the argument is NOT a command, otherwise
+  report that it is.
+#+BEGIN_EXAMPLE
+report_notcommand () 
+{ 
+    ignore type -a $1 && return 1;
+    report_usage $1 is NOT a command
+}
+#+END_EXAMPLE
+Here, ~type -a~ returns eash status of a potential command: /function,
+file/, or /builtin/.  The command may be in multiple files, and may be
+of all the three types.
++ notfunction -- the logical complement of ~isfunction~
+
+** usage guide
+
+Almost without exception (*notterminal*), the report family functions
+do not do their own /range/ checkin.  The report_notterminal function
+checks to see if the argument is in the range 0 thru 9 for a terminal
+device.   Notable examples of un-checked ranges:
+
+1. notargcount will fail if it doesn't receive two arguments, the 
+   expected number and the available number:  
+    : report_notargcount 3 $# ...
+
+1. notmodifiedsince doesn't test that it's argument is a file.
+
+1. none of the simple test functions, expecting a single argument
+   test for the presence of that argument at all.
+
+The best thing for a user is to assume little from the function other
+than the name allows, and if necessary, preceed more specific tests
+with the more general.
+
+* Other Report functions
+
+** help
+An announcement to see the *fam_list*
+** list
+This function *fam_list*, different from a default ~someFam_list~
+displays a two-column list of all family functions.
+It examines the current function environment, for each function, it
+lists the family name on one line and the subfunction on another,
+suitable for use by *fam_tally*
+
+** sub
+
+The ~fam_sub~ function creates a family subfunction. The first
+argument is the family name, the second the subfunction, and the
+remaining arguments are the function body.
+
+At this time, it is not intended as a general user function, and
+defends itself against other uses.
+
+** tally
+
+Using the *fam_list* function, *fam_tally* tallies function names with
+at least a single underscore in their counts the instances of
+~someFam~ names (the portion before the underscore), and the /sub/
+names, (the portion after the first underscore).  It produces a count
+of each family name, and of each sub-function name, independent of 
+it's family.  Expect a clustering of the count for the /_init/, /_help/,
+/_list/, ... functions
+
+Not every function with an underscore in its name necessarily belongs
+to a family, and some functions which appear to belong in a family may
+not have been defined as such.
+
+** variable
+This function sets a shell family variable name to a value:
+:  someFam_variable THIS that;
+such that the value of *SOMEFAM_THIS* is /that/
+** vars
+
+The default ~someFam_vars~ returns the names of the family variables,
+which match the uppercase preface: /SOMEFAM_*/
+
+* References
+
+If reading on paper, this document is found on-line at
+
+http://github.com/applemcg/shelf/blob/master/report.org
+
+** external
++ [[https://www.gnu.org/software/bash/manual/bashref.html#Brace-Expansion][Bash Shell brace expansion]]
++ my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
++ the [[./combine.org][Combine facility]]
++ [[http://tldp.org/LDP/abs/html/fto.html][test functions]]
+
+** SHELF local
++ the [[./shelf.org][SHELF Standard]]
++ the [[./README.org][Shelflib -- User Guide]]
++ the [[./famguide.org][fam function family]]
++ the [[./report.org][report function family]]
++ the [[./shdoc.org][shdoc function family]]
++ the [[./trace.org][trace function family]]
++ the [[./utilguide.org][utility function group]]
+
+#+INCLUDE: ./author.org
+
+** 

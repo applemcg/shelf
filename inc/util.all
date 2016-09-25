@@ -57,7 +57,6 @@ myname ()
 }
 setenv () 
 {
-
     : ~ NAME value ...
     : exports NAME to the environment,
     : set to value ...

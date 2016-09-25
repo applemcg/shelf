@@ -1,4 +1,4 @@
-#+INCLUDE: ./universalOrgPreface.txt
++INCLUDE: ./universalOrgPreface.org
 
 #+TITLE: Utility Function User Guide
 

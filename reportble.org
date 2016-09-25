@@ -1,0 +1,32 @@
+
+| G | notgroup             |
+| L | notsymboliclink      |
+| N | notmodifiedsinceread |
+| O | notowner             |
+| S | notsocket            |
+| b | notblockspecial      |
+| c | notcharacterspecial  |
+| d | notdirectory         |
+| e | notexisting          |
+| f | notfile              |
+| g | notsetgroupid        |
+| k | notstickybitset      |
+| n | notnonzerostring     |
+| p | notpipe              |
+| r | notreadable          |
+| s | notfile_gt_zero      |
+| t | notterminal          |
+| u | notsetuserid         |
+| w | notwritable          |
+| x | notexecutable        |
+| z | notzerolengthstring  |
+
+These are missing from the table:
+
+| a | file          | deprecated   |
+| h | symbolic link | use mnenomic |
+
+
+
+
+
