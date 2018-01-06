@@ -1,6 +1,5 @@
-#+INCLUDE: ./universalOrgPreface.org
-
 #+TITLE: Shelflib -- User Guide to SHELF practice
+#+INCLUDE: ./orgheader.org
 
 * COMMENT TODO
 
@@ -10,7 +9,7 @@
    control side-effects
 ** TODO follow shdoc link 
    when this work challenges simon laube's use, and is sufficient to
-   present to him.  what should hte name be?
+   present to him.  what should the name be?
 
 * Scope
 
@@ -134,15 +133,18 @@ Tracing my be enabled or disabled, by /trace_on/ or /trace_off/.
 Either of them reset the function behavior to either /trace_stderr/,
 or simply /return/, respectively.
 
-At bottom, the tracing logs it's calls to a per-user file:
 
-: HOME/lib/trace.log
-
-and echo's each call to the *stderr*, which may be separately saved
+Trace_call echo's each call to the *stderr*, which may be separately saved
 or altogether ignored:
 
 : ... 2> trace.err    # say, or
 : ... 2> /dev/null    # the "bit-bucket"
+
+For each call, the *trace_call* collects two function names: the current
+function and it's calling function.  This enables a user to construct
+a calling tree from a log.
+
+*** COMMENT obsolescent
 
 In any case, while tracing is enabled, the /logDateOnceHourly/
 function inspects the latest entry in the log to see if it's time to
@@ -151,10 +153,6 @@ level, anticipating collecting function usage statistics.  On
 reflection, the necessary test for the last record might be more work
 than necessary.  I've done some work elsewhere, to collect the hourly
 work by number of command executions.
-
-For each call, the trace log collects two function names: the current
-function and it's calling function.  This enables a user to construct
-a calling tree from the log.
 
 ** util -- a few programming functions
 
@@ -231,7 +229,8 @@ To that end, while the separate files are now combined into a single library,
 the process which supported that process, and at this moment, 
 the [[http://github.com/applemcg/combine][Combine Repository]] is itself being brought into this REPO and resulting
 SHELF library. 
-** The installation script
+
+* Installation
 Given the companion [[./combine.org][Combine facility]], this is the install script for the
 shelflib:
 

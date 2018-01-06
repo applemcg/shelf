@@ -1,121 +1,122 @@
 # report family
-copyright_report () 
+report_copyright () 
 { 
     comment "Copyright (C) 2015-2016, JYATL - Just Yet Another Testing Lab";
-    comment "mailto: mcgowan (at) alum DOT mit DOT edu";
+    comment "mailto: mcgowan (at) alum DOT mit DOT edu"
 }
 report_init ()
 {
     fam_iam
+    assert_init
 }
-function report_emptyfile
+report_emptyfile ()
 { 
     [[ -s $1 ]] && return 1;
     report_usage File: is empty
 }
-function report_isfile
+report_isfile ()
 { 
     [[ -f $1 ]] || return 1;
     report_usage $1 IS a file and should not be
 }
-function report_notblockspecial
+report_notblockspecial ()
 { 
     [[ -b $1 ]] && return 1;
     report_usage $1 is NOT a blockspecial file
 }
-function report_notcalledby
+report_notcalledby ()
 { 
     set ${1:-/dev/null} $(myname 3) non-Existant-function;
     [[ $2 == $1 ]] && return 1;
     report_usage was NOT called by $1.
 }
-function report_notcharacterspecial
+report_notcharacterspecial ()
 { 
     [[ -c $1 ]] && return 1;
     report_usage $1 is NOT a characterspecial file
 }
-function report_notdirectory
+report_notdirectory ()
 { 
     [[ -d $1 ]] && return 1;
     report_usage $1 is NOT a Directory
 }
-function report_notexecutable
+report_notexecutable ()
 { 
     [[ -x $1 ]] && return 1;
     report_usage $1 is NOT an executable file
 }
-function report_notexisting
+report_notexisting ()
 { 
     [[ -e $1 ]] && return 1;
     report_usage $1 is NOT an existing file
 }
-function report_notfunction
+report_notfunction ()
 { 
     set ${1:-/dev/null};
     isfunction $1 && return 1;
     report_usage $1 is NOT a Function
 }
-function report_notgroup
+report_notgroup ()
 { 
     [[ -G $1 ]] && return 1;
     report_usage $1 is NOT a file with group or egid
 }
-function report_notnonzerostring
+report_notnonzerostring ()
 { 
     [[ -n $1 ]] && return 1;
     report_usage $1 is NOT a nonzerolengthstring
 }
-function report_notowner
+report_notowner ()
 { 
     [[ -O $1 ]] && return 1;
     report_usage $1 is NOT a file with owner or euid
 }
-function report_notpipe
+report_notpipe ()
 { 
     [[ -p /dev/stdin ]] && return 1;
     report_usage is NOT reading a pipe
 }
-function report_notreadable
+report_notreadable ()
 { 
     [[ -r $1 ]] && return 1;
     report_usage $1 is NOT a readable file
 }
-function report_notsetgroupid
+report_notsetgroupid ()
 { 
     [[ -g $1 ]] && return 1;
     report_usage $1 is NOT a file with setgroupid
 }
-function report_notsetuserid
+report_notsetuserid ()
 { 
     [[ -u $1 ]] && return 1;
     report_usage $1 is NOT a file with setuserid
 }
-function report_notsocket
+report_notsocket ()
 { 
     [[ -S $1 ]] && return 1;
     report_usage $1 is NOT a socket
 }
-function report_notstickybitset
+report_notstickybitset ()
 { 
     [[ -k $1 ]] && return 1;
     report_usage $1 is NOT a file with its stickybitset
 }
-function report_notsymboliclink
+report_notsymboliclink ()
 { 
     [[ -L $1 ]] && return 1;
     report_usage $1 is NOT a symboliclink
 }
-function report_notwritable
+report_notwritable ()
 { 
     [[ -w $1 ]] && return 1;
     report_usage $1 is NOT a writable file
 }
-function report_notzerolengthstring
+report_notzerolengthstring ()
 { 
     [[ -z "$1" ]] && return 1;
     report_usage $1 is NOT a zerolengthstring
 }
-function report_usage
+report_usage ()
 { 
     comment USAGE $(myname 3): $*
 }
@@ -156,5 +157,78 @@ report_notfile_gt_zero ()
     [[ -s $1 ]] && return 1;
     report_usage $1 is NOT a filegreaterthanzero
 }
-[[ $(basename ${BASH_SOURCE[0]}) == report.fam ]] && report_init 1>&2
+report_notfunction () 
+{ 
+    declare -f $1 >/dev/null  && return 1;
+    report_usage $1 is NOT a function
+}
+assert_template ()
+{
+    printf "is_%s  ()\n{\n"         $1
+    printf "    %s\n}\n"           "$2"
+    printf "assert_%s ()\n{\n"      $1
+    printf "    %s && return 0;\n" "$2"
+    printf "    report_usage \$1 is NOT a %s;\n"
+    printf "    return 1\n}\n" "${3:-$1}"
+}
+assert_generate ()
+{
+    local fws="file with set"
+    assert_template function   'declare -f $1 >/dev/null'
 
+    assert_template file                '[[ -f $1 ]]'
+    assert_template directory           '[[ -d $1 ]]'
+
+    assert_template emptyfile           '[[ -s $1 ]]'
+    assert_template executable          '[[ -x $1 ]]'
+    assert_template existing            '[[ -e $1 ]]'
+    assert_template readable            '[[ -r $1 ]]'
+    assert_template writable            '[[ -w $1 ]]'
+    assert_template modifiedsinceread   '[[ -N $1 ]]'
+    
+    assert_template blockspecial        '[[ -b $1 ]]'
+    assert_template characterspecial    '[[ -c $1 ]]'
+    assert_template groupiseuid         '[[ -G $1 ]]' 'whose groupiseuid'
+    assert_template owneriseuid         '[[ -O $1 ]]' "whose owneriseuid"
+    assert_template setgroupid          '[[ -g $1 ]]' "$fws groupid"
+    assert_template setuserid           '[[ -u $1 ]]' "$fws userid"
+    assert_template socket              '[[ -S $1 ]]'
+    assert_template symboliclink        '[[ -L $1 ]]'
+
+    assert_template nonzerolengthstring '[[ -n $1 ]]'    
+    assert_template zerolengthstring    '[[ -z $1 ]]'
+
+}
+assert_help ()
+{
+    comment source ${BASH_SOURCE[$*]}
+}
+assert_init ()
+{
+    assert_make;
+    sfg assert_
+    sfg     is_ 
+    functions ${BASH_SOURCE[$*]}
+    assert_help
+    fam_iam
+}
+assert_construction () { echo assert_{make,generate,functions,template}; }
+assert_make ()
+{
+    eval "$(assert_generate|tee .generate.out)";
+    unset $(assert_construction)
+}
+set -x
+[[ $(basename ${BASH_SOURCE[0]}) == report.fam ]] && {
+
+     report_init 1>&2
+     assert_init 1>&2
+
+}
+set +x
+
+report_notexactcount () 
+{ 
+    [[ $2 -eq $1 ]] && return 1;
+    report_usage need exactly $1 arg/s: ${*:3}
+}

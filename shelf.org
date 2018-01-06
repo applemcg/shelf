@@ -1,4 +1,4 @@
-#+INCLUDE: universalOrgPreface.org
+#+INCLUDE: orgheader.org
 
 #+TITLE: Shell Library-Function Standard -- SHELF
 
@@ -138,6 +138,9 @@ A function included in a SHELF library:
 
 #+NAME: collaborators
 * Work items
+
+1. the function ~trace_passed~ now lists the usefull list of *trace* 
+   functions.  it contains a list of ~trace_old~ functions.
 
 1. the *report* family; it seems more appropriate to call it *assert*,
    since the functions are really assertin testing.

@@ -14,15 +14,12 @@ comment ()
 { 
     echo $* 1>&2
 }
-functions () 
-{
-    : ~ STDIN or file ...
-    : lists first instance of function definition
-    trace_call $*;
-    cat ${*:--} | awk ' 
-        $2 ~ /^\(\)$/     { print $1 } 
-             /^function / { print $2 }
-    ' | printfirst
+functionsn () 
+{ 
+    : date 2016-10-27;
+    : date 2016-11-03;
+    : date 2016-11-13;
+    funct_list $* | printfirst
 }
 printfirst () 
 {
@@ -74,4 +71,49 @@ sfg ()
     : e.g.   sfg PIPE wc   counts number of functions
     trace_call $*;
     set | functions | grep -i ${*:-.}
+}
+funct_list () 
+{ 
+    : date 2016-11-13;
+    spaceit $* | awk '$2 ~ /^\(\)$/ {print $1}'
+}
+spaceit () 
+{ 
+    : anagram of letters in set, pipe, cat;
+    : date 2016-10-27;
+    : date 2016-11-03;
+    : date 2016-11-12;
+    function ispipe () 
+    { 
+        [[ -p /dev/stdin ]]
+    };
+    case $# in 
+        0)
+            ispipe && cat || set
+        ;;
+        *)
+            cat $*
+        ;;
+    esac
+}
+fix_debug () 
+{ 
+    : looks more like trace_stderr;
+    : read_tty IS _off;
+    local nf=${#FUNCNAME[@]};
+    local gr=$(myname 3);
+    local pa=$(myname 2);
+    printf "DEPTH %d\t%s\t%s\t#: %d\t%s : " $nf $gr $pa $# "$*" 1>&2;
+    read x < /dev/tty
+}
+notfunction () 
+{ 
+    : date 2016-12-03;
+    isfunction $1 || echo $1
+}
+ymd_hms () 
+{ 
+    : date: 2017-05-29;
+    trace_call $*;
+    date "+%Y_%m%d_%H%M%S${1:+ $*}"
 }

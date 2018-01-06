@@ -1,7 +1,7 @@
 # install User Functions
 copyright_install ()
   { 
-      comment "Copyright (C) 2016, JYATL - Just Yet Another Testing Lab";
+      comment "Copyright (C) 2016,2017 JYATL - Just Yet Another Testing Lab";
       comment "mailto: mcgowan (at) alum DOT mit DOT edu";
   }
 install_app () 

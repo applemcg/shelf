@@ -1,98 +1,38 @@
-copyright_trace () 
+trace_call () 
+{ 
+    trace_stderr "$@"
+}
+trace_copyright () 
 { 
     comment "Copyright (C) 2015,2016 JYATL - Just Yet Another Testing Lab";
     comment "mailto: mcgowan (at) alum DOT mit DOT edu"
 }
-function trace_base
-{ 
-    printf "TRACE %s ( %s )\n" ${FUNCNAME[1]} "$*" 1>&2
-}
-function trace_basic
-{ 
-    set /tmp/$USER.y;
-    declare -f trace_base | sed 's/_base/_call/' > $1;
-    . $1
-}
-function trace_debug
+trace_debug () 
 { 
     comment $PWD $(myname 2) $*;
     trap read debug
 }
-function trace_fbdy
+trace_init () 
 { 
-    printf "TRACE %s ( %s )\n" ${FUNCNAME[1]} "$*" 1>&2;
-    nlevel=${#FUNCNAME[@]};
-    for ((i = 1; i < $nlevel; i++))
-    do
-        set ${BASH_LINENO[$i-1]} ${FUNCNAME[$i]} ${BASH_ARGV[0]};
-        [[ $1 -lt 0 ]] && set 0 $2 /dev/null;
-        trace_level $* $i $nlevel;
-    done
+    declare -f fam_iam > /dev/null || { 
+        comment $(myname) FAM_IAM is NOT a function;
+        return 1
+    };
+    fam_iam;
+    smart_list trace_passed  trace_{call,copyright,debug,init,missing,old,simple,stderr}
 }
-function trace_help
-{ 
-    echo trace functions:;
-    sfg trace_ | sed 's/^/  /'
-}
-function trace_init
-{ 
-    declare -f fam_iam >/dev/null || {
-        comment $(myname) FAM_IAM is NOT a function; return 1;
-    }
-    fam_iam
-    trace_on
-}
-function trace_isOFF
-{ 
-    local tr=$(trace_state);
-    trace_off;
-    eval $*;
-    eval $tr
-}
-function trace_easy
+trace_missing () 
 {
-    echo $* 1>&2
+    : create a replacement function to show the callstack.
+    : date: 2017-06-04;
+    : date: 2017-07-18;
+    report_notargcount 1 $# "function name to trace where called" && return 1;
+    eval "$1 () { callStack \$(myname); }"
 }
-function trace_isOKto
+trace_old () 
 { 
-    [[ $1 == trace_${1/trace_} ]] || echo $1
-}
-function trace_level
-{ 
-    line=$(sed -n ${1}p $3);
-    printf " %d / %d \t%-14s\t%4d: %s\n" $4 $5 "$2()" $1 "$line" 1>&2
-}
-function trace_on
-{ 
-    eval "trace_call () { trace_stderr \"\$@\"; }";
-    # for the moment, disable this tracing mechanism
-    # eval "trace_call () { return; }";
-    trace_set trace_on trace_off
-}
-function trace_off
-{ 
-    eval "trace_call () { return; }";
-    trace_set trace_off trace_on
-}
-function trace_set
-{ 
-    case $1.$2 in 
-        trace_on.trace_off | trace_off.trace_on)
-            setenv TRACE_STATE ${1};
-            setenv TRACE_NOT ${2}
-        ;;
-        trace_on.*)
-            trace_set $1 trace_off
-        ;;
-        trace_off.*)
-            trace_set $1 trace_on
-        ;;
-    esac
-}
-function trace_show
-{ 
-    : show a basic, easy trace_call;
-    trace_replace easy
+    : date: 2017-08-19;
+    ${@:-echo} trace_{set,show,off,on,isOFF,isOKto,base,basic,easy,replace,fbdy,level,toggle,summary,state}
 }
 trace_simple () 
 { 
@@ -101,49 +41,14 @@ trace_simple ()
     pa=${FUNCNAME[1]:-COMMANDLINE};
     printf "TRACE %s\t%s\n" "$pa" "$*" 1>&2
 }
-trace_replace () 
-{ 
-    : show a basic, simple trace_call;
-    : returns trace_{arg} as trace_call;
-    : or returns trace_call   
-    case ${1:-call} in
-         base | call | easy | simple )
-         declare -f trace_${1} | sed "s/$1/call/"
-         ;;
-    esac
-}
-function trace_state
-{ 
-    echo $TRACE_STATE
-}
-function trace_summary
-{ 
-    set ~/lib/trace.log;
-    trace_call $*;
-    cat $1 | awk '
-
-    $1 ~ /TRACE/ && ( $3 ~ /fm/ || $3 ~ /@/)   { 
-
-                      count[$2 "\t" $4]++; next 
-    }
-    $1 ~ /HOURLY/   { for (c in count) {
-                        printf "SUM\t%6d\t%s\n", count[c], c
-                        }
-                      print $0
-                      nc = 0
-                      delete count
-                    }
-    '
-}
-function trace_toggle
-{ 
-    trace_set $TRACE_NOT $TRACE_STATE;
-    $(trace_state);
-    trace_state
-}
 trace_stderr () 
 { 
     pa=${FUNCNAME[2]:-COMMANDLINE};
     gr=${FUNCNAME[3]:-COMMANDLINE};
-    printf "TRACE %s\t@ %s %d  ( %s )\n" "$pa" "$gr" $# "$*" 1>&2
+    printf "TRACE %s\t@ %s\t%d  ( %s )\n" "$gr" "$pa" $# "$*" 1>&2
+}
+trace_help () 
+{ 
+    echo trace functions:;
+    sfg trace_ | sed 's/^/  /'
 }
