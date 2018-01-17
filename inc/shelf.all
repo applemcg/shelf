@@ -1,7 +1,0 @@
-@include util.all
-@include report.fam
-@include shdoc.fam
-@include trace.fam
-@include fam.fam
-@include shelf.ini
-
