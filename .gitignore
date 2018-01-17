@@ -1,5 +1,7 @@
 .bak/*
 *.html
+.*
+*#
 *~
 src/*.out
 ar/
