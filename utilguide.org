@@ -140,7 +140,6 @@ http://github.com/applemcg/shelf/blob/master/utilguide.org
 ** external 
 + [[https://en.wikipedia.org/wiki/C_shell][C shell -- csh]].
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
-+ the [[./combine.org][Combine facility]]
 + [[http://wiki.bash-hackers.org/commands/builtin/declare][declare builtin]] syntax, Bash Hacker's Wiki
 
 ** SHELF local

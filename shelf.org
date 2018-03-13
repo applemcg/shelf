@@ -149,9 +149,6 @@ A function included in a SHELF library:
    context.  a review would be a great assist to help clarify any possible
    confusion
 
-1. combining families -- now supported by the [[./combine.org][Combine facility]], is this 
-   really necessary?
-
 1. whatever the result of the *shdoc* name choice, a facility to take the
    now-caputured per-function "shdoc" to display in a browser similar to 
    it's /language/-doc anticendents.   this will be preceeded by work on 
@@ -178,7 +175,6 @@ an otherwise undetected error/. /A successful test is one which does/.
 ** external
 + the [[https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29][bash shell]]
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
-+ the [[./combine.org][Combine facility]]
 + [[https://en.wikipedia.org/wiki/Javadoc][Javadoc]]
 + [[http://perldoc.perl.org][Perldoc]]
 + [[http://pydoc.org][Pydoc]]

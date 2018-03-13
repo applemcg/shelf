@@ -206,7 +206,6 @@ http://github.com/applemcg/shelf/blob/master/report.org
 ** external
 + [[https://www.gnu.org/software/bash/manual/bashref.html#Brace-Expansion][Bash Shell brace expansion]]
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
-+ the [[./combine.org][Combine facility]]
 + [[http://tldp.org/LDP/abs/html/fto.html][test functions]]
 
 ** SHELF local
@@ -220,4 +219,3 @@ http://github.com/applemcg/shelf/blob/master/report.org
 
 #+INCLUDE: ./author.org
 
-** 

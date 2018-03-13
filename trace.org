@@ -31,7 +31,6 @@ http://github.com/applemcg/shelf/blob/master/trace.org
 ** external 
 
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
-+ the [[./combine.org][Combine facility]]
 
 ** SHELF local
 + the [[./shelf.org][SHELF Standard]]
