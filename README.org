@@ -19,12 +19,12 @@ Standard uses /function families/, this is the User Guide for the
 utility group of functions.  Each of these five (four familes, one
 group) have their own User Guide,
 
-The /function family/ introduces nothing new to shell syntax or
+The function family introduces nothing new to shell syntax or
 ability to access function libraries.  It does set a practice to
 organize function collections inside a function library.
 
 From a practical stand point, each family or group has its own source
-file.  These are combined into a single shell library ~shelflib~
+file.  These are combined into a single shell library, shelflib
 and installed in the user's runtime.   Instructions follow.
 
 When installed, the user has roughly 80 bash shell functions to 
