@@ -19,12 +19,12 @@ Standard uses /function families/, this is the User Guide for the
 utility group of functions.  Each of these five (four familes, one
 group) have their own User Guide,
 
-The function family introduces nothing new to shell syntax or
+The /function family/ introduces nothing new to shell syntax or
 ability to access function libraries.  It does set a practice to
 organize function collections inside a function library.
 
-From a practical stand point, each family or group has its own source
-file.  These are combined into a single shell library, shelflib
+From a practical standpoint, each family or group has its own source
+file.  These are combined into a single shell library ~shelflib~
 and installed in the user's runtime.   Instructions follow.
 
 When installed, the user has roughly 80 bash shell functions to 
@@ -225,34 +225,29 @@ In order to make the files accessible to the general audience, the de-tangled
 files are now the source control objects, and therefore available for edit in 
 their own individual right.
 
-To that end, while the separate files are now combined into a single library,
-the process which supported that process, and at this moment, 
-the [[http://github.com/applemcg/combine][Combine Repository]] is itself being brought into this REPO and resulting
-SHELF library. 
+Separate libraries are combined into an single public library with 
+[[https://github.com/applemcg/bash/smpub][parallel work in smart-public functons]].
 
-* Installation
-Given the companion [[./combine.org][Combine facility]], this is the install script for the
-shelflib:
+* COMMENT Installation
 
-#+INCLUDE: "./src/shelflib.install"
+: INCLUDE: "./src/shelflib.install"
 
 ** the top shelf
 
 The shelf.all file collects the families into the installable
 shell library: *shelflib*
-#+INCLUDE: "./inc/shelf.all" example
+: INCLUDE: "./inc/shelf.all" example
 
 And it's initialized by the only unique function in the library:
 ~shelf_init~ which initializes the various families:
 
-#+INCLUDE "./inc/shelf.ini" example
+: INCLUDE "./inc/shelf.ini" example
+
 
 * References
 
-
 ** external
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
-+ the [[./combine.org][Combine facility]]
 
 ** SHELF local
 + the [[./shelf.org][SHELF Standard]]

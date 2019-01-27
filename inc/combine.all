@@ -1,9 +1,0 @@
-# combine combined
-# [[file:~/git/shelf/combine.org::*combine%20combined][combine\ combined:1]]
-@include combine.0
-@include combine.1
-@include install.0
-@include install.1
-@include install.2
-combine_init 1>&2
-# combine\ combined:1 ends here

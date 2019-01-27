@@ -1,0 +1,67 @@
+
+* thoughts
+** on planting the home location
+
+a person editing a function needs to know when (or where) a file is
+edited.  i call this the /primary/ source of the information: that
+file whose version needs recording (backup, version control) at
+various intervals of satisfying functionality.
+
+i'll invent a function: *sourcify* which plants the identity of a
+library, or family in that spot, so the runtime may query the location
+of the source to fix, update, or delete.
+
+a function has a home in a library. currently, *whf* identifies the
+library in it's runtime location; this is sufficient for libraries
+edited in place.  what about those composed by separate families?
+
+this problem was brought up by my decision to 'untangle' the shell
+function source from an /org/ file.  it seems imprudent to rely on a
+group to agree on an editor, wonderful as emacs is. so, with source
+files sitting in their "tangled" state, (e.g. had they been in an .org
+file, and tangled into their otherwise editable mode), this then is
+the fundamental, or primary source.
+
+so, two situations arise:
+1. the files are editied in their run-time location. e.g. a "script"
+   or a single-family library, or
+1. a multi-family library, where each family is in a separate file.
+
+In the former case, *whf* file is sufficient.  In the latter, the 
+multi-family library will have to simulate the "detangled" file
+idententifier.  So, if whf, or it's surrogate finds a file's runtime
+function, then it needs to check that library to find out if it's 
+been assembled from multiple files, such as "tangled" families.
+
+Here's a fragment from one such tangled file:
+
+: # [[file:~/Dropbox/commonplace/software/profile.org::*user_profile][user_profile:1]]
+
+so, let's recognize that pattern or this one:
+
+: # [[file:~/Dropbox/commonplace/software/profile.org]]
+
+as the original file.  And in my current practice, the shelflib is
+constructed from family fragments in
+~$HOME/git/shelf/inc/*.{fam,all,ini}~.   So, any such file being
+concatenated into a run-time location will need to add the above
+fragment simulating the tangled source.   
+
+So, two functions are needed: *catify* which concatenates the file,
+following such a label, and a *swhf* which detects either the *whf*
+of a function which lives in the edited location or detects the tangled
+comment file id.
+
+leaving this *whf* alone for a while, let's build off of it
+#+BEGIN_SRC sh
+whf () 
+{ 
+    : date 2016-11-11;
+    : date 2016-11-13;
+    awk -v patn="^${1}$" '
+
+    $1 ~ patn && $2 ~ /[(] *[)]/ && !p[FILENAME]++ { print FILENAME }
+
+    ' $(funclocn 2>/dev/null)
+}
+#+END_SRC

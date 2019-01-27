@@ -284,9 +284,7 @@ If reading on paper, this document is found on-line at
 [[http://mcgowans.org/marty3/commonplace/software/shdoc.html]] 
 
 ** external 
-
 + my [[http://mcgowans.org/marty3/commonplace/][Commonplace Book]]
-+ the [[./combine.org][Combine facility]]
 
 ** SHELF local
 + the [[./shelf.org][SHELF Standard]]
